@@ -8,7 +8,6 @@ const cacheSessionToken = (token) => {
   try {
     localStorage.setItem('x-session-token', token);
   } catch (e) {
-    console.warn('[auth] Failed to cache session token:', e?.message || e);
   }
 };
 
@@ -16,18 +15,14 @@ const clearSessionToken = () => {
   try {
     localStorage.removeItem('x-session-token');
   } catch (e) {
-    console.warn('[auth] Failed to clear session token:', e?.message || e);
   }
 };
 
 export const getMe = createAsyncThunk('auth/getMe', async (_, thunkAPI) => {
  try {
- console.debug('[getMe] Fetching current user...');
  const response = await api.get('/users/me');
- console.debug('[getMe] Success, user:', response.data.user?.id);
  return response.data.user;
  } catch (error) {
-	console.debug('[getMe] Failed:', error?.response?.status, error?.response?.data?.alert);
 	return thunkAPI.rejectWithValue("Session expired");
  }
 });
@@ -124,12 +119,10 @@ export const deleteAddress = createAsyncThunk('address/delete', async (userData,
 export const handleLogoutProcess = createAsyncThunk('auth/logoutAndPreserve',
  async (_, { dispatch }) => {
  try {
- console.log('[LOGOUT] Starting logout process...');
 
  let cartToken = null;
  try {
 	 const logoutRes = await api.post('/users/logout');
-	 console.log('[LOGOUT] Server logout response:', logoutRes.data);
  } catch (err) {
 	 console.error('[LOGOUT] Server logout error:', err?.response?.data || err?.message);
  }
@@ -137,17 +130,13 @@ export const handleLogoutProcess = createAsyncThunk('auth/logoutAndPreserve',
  try {
 	 const response = await api.post('/cart/logout-preserve');
 	 cartToken = response.data?.cartToken;
-	 console.log('[LOGOUT] Cart preserved with token:', cartToken?.slice(0, 8));
  } catch (err) {
-	 console.error('[LOGOUT] Cart preserve error (continuing anyway):', err?.response?.data || err?.message);
  }
 
  dispatch(logout());
- console.log('[LOGOUT] Dispatched Redux logout reducer');
 
  if (api.defaults.headers.common['Authorization']) {
  delete api.defaults.headers.common['Authorization'];
- console.log('[LOGOUT] Deleted Authorization header from axios defaults');
  }
 
  clearSessionToken();
@@ -159,9 +148,7 @@ export const handleLogoutProcess = createAsyncThunk('auth/logoutAndPreserve',
  }
 
  dispatch(getCart());
- console.log('[LOGOUT] Complete, getCart dispatched');
  } catch (error) {
- console.error("[LOGOUT] Logout preservation failed", error);
  dispatch(logout());
  localStorage.removeItem('x-cart-token');
  clearSessionToken();

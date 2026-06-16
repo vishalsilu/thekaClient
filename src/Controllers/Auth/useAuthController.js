@@ -92,7 +92,7 @@ export const useAuthController = () => {
 
  setIsSubmitting(true);
  setLoading(true);
- const loadingToast = toast.loading("Evaluating security context & sending code...");
+ const loadingToast = toast.loading("Verifying...");
 
  try {
  const freshToken = await executeRecaptcha('send_otp');
@@ -108,13 +108,12 @@ export const useAuthController = () => {
  });
 
  if (response.data.success) {
- toast.success("Validation OTP code distributed to your inbox!", { id: loadingToast });
+ toast.success("OTP code sent to your email.", { id: loadingToast });
  setOtpSent(true);
  setStep(1);
  startResendTimer();
  }
  } catch (error) {
- console.error("Frontend verification submission error:", error);
  const errorMessage = error.response?.data?.error || error.response?.data?.message ||"Something went wrong.";
  toast.error(errorMessage, { id: loadingToast });
  } finally {
@@ -128,20 +127,20 @@ export const useAuthController = () => {
  if (!executeRecaptcha) return toast.error('Security context unavailable. Please refresh browser.');
 
  setLoading(true);
- const resendToast = toast.loading("Generating fresh token and resending OTP...");
+ const resendToast = toast.loading("Requesting new OTP...");
 
  try {
  const token = await executeRecaptcha('resend_otp');
  const resultAction = await dispatch(sendOTP({ email: identifier.trim().toLowerCase(), recaptchaToken: token, mode }));
 
  if (sendOTP.fulfilled.match(resultAction)) {
- toast.success('A fresh verification code has been dispatched!', { id: resendToast });
+ toast.success('New OTP code sent to your email.', { id: resendToast });
  startResendTimer();
  } else {
- toast.error(resultAction.payload ||'Failed to dispatch fresh validation token.', { id: resendToast });
+ toast.error(resultAction.payload ||'Resend OTP failed.', { id: resendToast });
  }
  } catch (err) {
- toast.error('Could not communicate safely with security networks.', { id: resendToast });
+ toast.error('Failed to request new OTP.', { id: resendToast });
  } finally {
  setLoading(false);
  }
@@ -149,22 +148,22 @@ export const useAuthController = () => {
 
  const handleVerifyOTP = async (e) => {
  e.preventDefault();
- if (!otp || otp.length !== 6) return toast.error('Please enter a valid 6-digit authentication string.');
+ if (!otp || otp.length !== 6) return toast.error('Please enter a valid 6-digit OTP code.');
 
  if (mode === 'forgot') {
    if (!password || password !== confirmPassword) {
-     return toast.error('Please enter matching new passwords.');
+     return toast.error('Password and confirmation do not match.');
    }
  }
 
  setLoading(true);
- const verifyingToast = toast.loading("Checking credentials against distributed logs...");
+ const verifyingToast = toast.loading("Verifying credentials...");
 
  try {
  if (mode === 'forgot') {
    const resultAction = await dispatch(resetPassword({ email: identifier.trim().toLowerCase(), otp, password }));
    if (resetPassword.fulfilled.match(resultAction)) {
-     toast.success('Password reset complete. Entering workspace...', { id: verifyingToast });
+     toast.success('Password reset successfully.', { id: verifyingToast });
      navigate('/');
    } else {
      toast.error(resultAction.payload || 'Invalid reset details provided.', { id: verifyingToast });
@@ -174,19 +173,19 @@ export const useAuthController = () => {
 
    if (verifyOTP.fulfilled.match(resultAction)) {
      if (resultAction.payload.registrationRequired) {
-       toast.success('Email authenticated! Please set up account details.', { id: verifyingToast });
+       toast.success('Email verified! Please set up your account details.', { id: verifyingToast });
        setRegToken(resultAction.payload.registrationToken);
        setStep(2);
      } else {
-       toast.success('Access keys confirmed! Entering workspace...', { id: verifyingToast });
+       toast.success('Email verified! You are now logged in.', { id: verifyingToast });
        navigate('/');
      }
    } else {
-     toast.error(resultAction.payload || 'Invalid verification passcode entered.', { id: verifyingToast });
+     toast.error(resultAction.payload || 'Invalid OTP code entered.', { id: verifyingToast });
    }
  }
  } catch (err) {
- toast.error('Structural account processing error.', { id: verifyingToast });
+ toast.error('Failed to verify OTP code.', { id: verifyingToast });
  } finally {
  setLoading(false);
  }
@@ -195,11 +194,11 @@ export const useAuthController = () => {
  const handleCompleteProfileRegistration = async (e) => {
  e.preventDefault();
  if (!firstName.trim() || !lastName.trim() || !phone.trim()) {
- return toast.error('Please fulfill all required profile variables.');
+ return toast.error('Please fill in all required profile fields.');
  }
 
  setLoading(true);
- const creatingToast = toast.loading("Building secure account profile reference...");
+ const creatingToast = toast.loading("Finalizing account setup...");
 
  try {
  const resultAction = await dispatch(completeRegistration({
@@ -213,7 +212,7 @@ export const useAuthController = () => {
  toast.success(`Welcome to ${siteData?.websiteName ||'Our Platform'}! Account setup finalized.`, { id: creatingToast });
  navigate('/');
  } else {
- toast.error(resultAction.payload ||'Failed to sync new metadata records.', { id: creatingToast });
+ toast.error(resultAction.payload ||'Failed to finalize account setup.', { id: creatingToast });
  }
  } catch (err) {
  toast.error('Fatal data configuration parsing failure.', { id: creatingToast });

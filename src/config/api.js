@@ -45,7 +45,6 @@ const saveResumeToken = (token) => {
   try {
     localStorage.setItem('x-session-token', token);
   } catch (err) {
-    console.warn('[api] Failed to persist session token:', err?.message || err);
   }
 };
 
