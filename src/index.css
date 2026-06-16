@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+ @font-face {
+ font-family:'SignatureScript';
+ src: url('./assets/fonts/BrittanySignature.ttf') format('truetype');
+ font-weight: normal;
+ font-style: normal;
+ }
+
+ @media screen and (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+
+ :root {
+ color-scheme: light;
+ --bg: #f8fafc;
+ --surface: #ffffff;
+ --surface-strong: #f1f5f9;
+ --text: #0f172a;
+ --muted: #64748b;
+ --border: #e2e8f0;
+ --card: #ffffff;
+ --shadow: rgba(15, 23, 42, 0.08);
+ --accent: #10b981;
+ }
+
+
+ html, body {
+ background: var(--bg);
+ color: var(--text);
+ min-height: 100%;
+ transition: background-color 0.25s ease, color 0.25s ease;
+ }
+}
+
+@layer components {
+ .bg-app { background-color: var(--bg); }
+ .bg-surface { background-color: var(--surface); }
+ .bg-surface-strong { background-color: var(--surface-strong); }
+ .text-primary { color: var(--text); }
+ .border-surface { border-color: var(--border); }
+ .shadow-theme { box-shadow: 0 24px 64px var(--shadow); }
+}
+
+@layer utilities {
+ /* Hide scrollbar for Chrome, Safari and Opera */
+ .no-scrollbar::-webkit-scrollbar {
+ display: none;
+ }
+
+ /* Hide scrollbar for IE, Edge and Firefox */
+ .no-scrollbar {
+ -ms-overflow-style: none; /* IE and Edge */
+ scrollbar-width: none; /* Firefox */
+ }
+
+ .scaling-icon {
+ display: inline-block;
+ transform: scale(0);
+ animation: scaleUp 1s ease-out forwards;
+ }
+
+ @keyframes scaleUp {
+ 0% {
+ transform: scale(0.1);
+ opacity: 0;
+ }
+ 70% {
+ transform: scale(2);
+ opacity: 1;
+ }
+ 100% {
+ transform: scale(1);
+ opacity: 1;
+ }
+ }
+}
+
+.grecaptcha-badge { 
+ visibility: hidden !important; 
+}
