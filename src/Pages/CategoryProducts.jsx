@@ -67,19 +67,19 @@ const CategoryProducts = () => {
  <FaHome className="text-gray-400 hover:text-black cursor-pointer transition-colors" onClick={() => navigate('/')} />
  <span className="text-gray-300">/</span>
  <span className="text-gray-400 cursor-pointer hover:text-black transition-colors" onClick={() => navigate(`/collections/${type}`)}>
- {type}
+ {type.replace(/[^a-z0-9]+/g, " ")}
  </span>
  <span className="text-gray-300">/</span>
- <p className="text-black">{category}</p>
+ <p className="text-black">{category.replace(/[^a-z0-9]+/g, " ")}</p>
  </div>
 
  {products.length > 0 ? (
  <>
  {/* --- SEARCH HEADER VIEWPORT --- */}
  <header className="text-center">
- <h1 className="text-4xl md:text-6xl font-extralight uppercase tracking-[0.25em] text-gray-900">{category}</h1>
+ <h1 className="text-4xl md:text-6xl font-extralight uppercase tracking-[0.25em] text-gray-900">{category.replace(/[^a-z0-9]+/g, " ")}</h1>
  <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-gray-400 mt-4 max-w-md mx-auto leading-relaxed">
- Explore our curated selection of {type}'s {category} design essentials
+ Explore our curated selection of {type.replace(/[^a-z0-9]+/g, " ")}'s {category.replace(/[^a-z0-9]+/g, " ")} design essentials
  </p>
  </header>
 

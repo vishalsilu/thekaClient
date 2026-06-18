@@ -15,16 +15,18 @@ const Collection = () => {
  );
 
  // Normalize mapping structure payloads cleanly down into presentation nodes
- const displayItems = type
- ? typeCollection?.allCategories?.map((cat) => ({
- ...cat,
- collectionName: typeCollection.name,
- targetPath: `/collections/${cat.path}`,
- }))
- : collections?.map((col) => ({
- ...col,
- targetPath: `/collections/${col.name?.toLowerCase()}`,
- }));
+const displayItems = type
+  ? typeCollection?.allCategories?.map((cat) => ({
+      ...cat,
+      collectionName: typeCollection.name,
+      // Helper function to clean path segments
+      targetPath: `/collections/${cat.path.split('/').filter(Boolean).map(s => s.replace(/[^a-z0-9]+/g, "-")).join('/')}`,
+    }))
+  : collections?.map((col) => ({
+      ...col,
+      targetPath: `/collections/${col.path.split('/').filter(Boolean).map(s => s.replace(/[^a-z0-9]+/g, "-")).join('/')}`,
+    }));
+console.log(displayItems)
 
  const displayTitle = type && typeCollection ? typeCollection.name :"Our Collections";
 

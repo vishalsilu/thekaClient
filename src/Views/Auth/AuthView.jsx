@@ -36,10 +36,15 @@ const AuthView = ({ controller }) => {
               <label className="block text-[9px] font-black uppercase text-zinc-400">Email Address</label>
               <input type="email" placeholder="name@example.com" value={identifier} onChange={(e) => setIdentifier(e.target.value)} disabled={loading || otpSent} required className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg text-sm outline-none focus:border-zinc-900" />
             </div>
+            
           {mode === 'forgot' && otpSent && (
               <>
                <div className="space-y-1">
-               <label className="block text-[9px] font-black uppercase text-zinc-400">Password</label>
+               <label className="block text-[9px] font-black uppercase text-zinc-400">OTP</label>
+               <input type="text" maxLength="6" value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))} placeholder="Enter 6 digit secure otp" required className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg text-sm outline-none focus:border-zinc-900" />
+             </div>
+               <div className="space-y-1">
+               <label className="block text-[9px] font-black uppercase text-zinc-400">New Password</label>
                <input type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)}  required className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg text-sm outline-none focus:border-zinc-900" />
              </div>
             <div className="space-y-1">
@@ -66,7 +71,7 @@ const AuthView = ({ controller }) => {
               </>
             )}
 
-            {showOtpInput && (
+            {showOtpInput && mode !== 'forgot' && (
               <div className="space-y-1">
                 <label className="block text-[9px] font-black uppercase text-zinc-400">OTP Code</label>
                 <input type="text" maxLength="6" value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))} className="w-full px-3 py-3 text-center text-xl tracking-[0.5em] bg-zinc-50 border border-zinc-200 rounded-lg outline-none focus:border-zinc-900" placeholder="000000" required />
@@ -99,9 +104,9 @@ const AuthView = ({ controller }) => {
         <form onSubmit={handleProfileSubmit} className="space-y-4">
           <button type="button" onClick={() => setStep(1)} className="flex items-center gap-1 text-[10px] font-bold uppercase text-zinc-500"><ArrowLeftIcon size={12} /> Back</button>
           <div className="grid grid-cols-2 gap-3">
-            <div><label className="block text-[9px] font-black uppercase text-zinc-400">First</label><input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg text-sm outline-none" /></div>
-            <div><label className="block text-[9px] font-black uppercase text-zinc-400">Last</label><input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg text-sm outline-none" /></div>
-            <div><label className="block text-[9px] font-black uppercase text-zinc-400">Phone</label><input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg text-sm outline-none" /></div>
+            <div><label className="block text-[9px] font-black uppercase text-zinc-400">First Name</label><input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg text-sm outline-none" /></div>
+            <div><label className="block text-[9px] font-black uppercase text-zinc-400">Last Name</label><input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg text-sm outline-none" /></div>
+            <div className="col-span-2"><label className="block text-[9px] font-black uppercase text-zinc-400">Phone</label><input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg text-sm outline-none" /></div>
           </div>
           <button type="submit" className="w-full py-2.5 text-[10px] font-black uppercase rounded-lg bg-zinc-900 text-white">Save Profile</button>
         </form>

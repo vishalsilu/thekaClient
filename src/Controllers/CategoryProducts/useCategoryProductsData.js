@@ -37,13 +37,19 @@ export const useCategoryProductsData = () => {
  // Sync remote API records matching active routing queries
  useEffect(() => {
  if (type && category) {
- dispatch(getProducts({ type, category }));
+dispatch(getProducts({
+  type: type.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+  category: category.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+}));
  }
 
  const fetchDynamicFilters = async () => {
  try {
  if (type && category) {
- const response = await api.get(`/category/weartype/${type}/${category}`);
+const cleanType = type.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+const cleanCategory = category.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
+const response = await api.get(`/category/weartype/${cleanType}/${cleanCategory}`);
  setFilterOptions(response.data);
  setActiveFilters({ Size: [], Color: [], Fabric: [], Pattern: [], Fit: [] });
  }

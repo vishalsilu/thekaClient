@@ -1,4 +1,3 @@
-// controllers/useAuthController.js
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,10 +11,8 @@ export const useAuthController = () => {
   const navigate = useNavigate();
   const { executeRecaptcha } = useGoogleReCaptcha();
 
-  // Data from Model (Redux)
   const siteData = useSelector((state) => state.siteData.data);
   
-  // Core States
   const [step, setStep] = useState(1);
   const [mode, setMode] = useState('login');
   const [identifier, setIdentifier] = useState('');
@@ -27,8 +24,6 @@ export const useAuthController = () => {
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
   const [regToken, setRegToken] = useState('');
-  
-  // Store the temporary Pre-Auth Token
   const [preAuthToken, setPreAuthToken] = useState(''); 
   
   const [loading, setLoading] = useState(false);
@@ -36,7 +31,6 @@ export const useAuthController = () => {
   const [timeLeft, setTimeLeft] = useState(0);
   const timerRef = useRef(null);
 
-  // Resend Countdown Mechanism
   useEffect(() => {
     if (timeLeft > 0) {
       timerRef.current = setTimeout(() => {
@@ -87,7 +81,6 @@ export const useAuthController = () => {
     setTimeLeft(0);
   };
 
-  // Handler Actions
   const handleSendEmailOTP = async (e) => {
     e.preventDefault();
     if (!executeRecaptcha) {
@@ -95,12 +88,10 @@ export const useAuthController = () => {
       return;
     }
 
-    // UPDATE: Require password for BOTH login and register modes before sending OTP
     if ((mode === 'login' || mode === 'register') && !password) {
       return toast.error("Please enter a password.");
     }
 
-    // Confirm passwords match during registration
     if (mode === 'register' && password !== confirmPassword) {
       return toast.error('Passwords do not match.');
     }
@@ -114,7 +105,6 @@ export const useAuthController = () => {
     try {
       let currentPreAuthToken = '';
 
-      // STEP 1: Check credentials first via the new dedicated route (Login Only)
       if (mode === 'login') {
         const freshToken = await executeRecaptcha('verify_credentials');
         const verifyRes = await api.post('/users/verify-credentials', {
@@ -130,7 +120,6 @@ export const useAuthController = () => {
         }
       }
 
-      // STEP 2: Request the OTP
       const otpToken = await executeRecaptcha('send_otp');
       const payload = {
         email: identifier.trim().toLowerCase(),
@@ -138,8 +127,11 @@ export const useAuthController = () => {
         mode,
       };
 
+      // Add tokens or passwords based on the mode
       if (mode === 'login') {
         payload.preAuthToken = currentPreAuthToken;
+      } else if (mode === 'register') {
+        payload.password = password; // Pass the password to be cached by backend
       }
 
       const response = await api.post('/users/email/send-otp', payload);
@@ -173,7 +165,8 @@ export const useAuthController = () => {
         email: identifier.trim().toLowerCase(), 
         recaptchaToken: token, 
         mode,
-        preAuthToken 
+        preAuthToken,
+        password: mode === 'register' ? password : undefined // Refresh the Redis cache if registering
       }));
 
       if (sendOTP.fulfilled.match(resultAction)) {
@@ -212,24 +205,20 @@ export const useAuthController = () => {
           toast.error(resultAction.payload || 'Invalid reset details provided.', { id: verifyingToast });
         }
       } else {
-        // UPDATE: Attach password and mode to the verification payload so backend can register the user
+        // We no longer send the password here. Backend retrieves it from Redis.
         const verifyPayload = { 
             email: identifier.trim().toLowerCase(), 
             otp,
             mode
         };
         
-        if (mode === 'register') {
-            verifyPayload.password = password;
-        }
-
         const resultAction = await dispatch(verifyOTP(verifyPayload));
 
         if (verifyOTP.fulfilled.match(resultAction)) {
           if (resultAction.payload.registrationRequired) {
             toast.success('Account created! You can now complete your profile.', { id: verifyingToast });
             setRegToken(resultAction.payload.registrationToken);
-            setStep(2); // Move to profile completion (step 2)
+            setStep(2);
           } else {
             toast.success('Email verified! You are now logged in.', { id: verifyingToast });
             navigate('/');
@@ -247,7 +236,6 @@ export const useAuthController = () => {
 
   const handleCompleteProfileRegistration = async (e) => {
     e.preventDefault();
-    // UPDATE: Removed strict validation so users can submit blank fields to skip
 
     setLoading(true);
     const creatingToast = toast.loading("Saving profile...");
@@ -261,7 +249,7 @@ export const useAuthController = () => {
       }));
 
       if (completeRegistration.fulfilled.match(resultAction)) {
-        toast.success(`Profile updated! Welcome to ${siteData?.websiteName || 'Our Platform'}.`, { id: creatingToast });
+        toast.success(`Profile updated! Welcome.`, { id: creatingToast });
         navigate('/');
       } else {
         toast.error(resultAction.payload || 'Failed to update profile.', { id: creatingToast });
@@ -274,7 +262,6 @@ export const useAuthController = () => {
   };
 
   return {
-    // States & Meta
     step, setStep,
     mode,
     identifier, setIdentifier,
@@ -287,7 +274,6 @@ export const useAuthController = () => {
     phone, setPhone,
     loading, isSubmitting, timeLeft, siteData,
     preAuthToken, 
-    // Methods
     formatTime,
     handleChooseMode,
     handleRestart,

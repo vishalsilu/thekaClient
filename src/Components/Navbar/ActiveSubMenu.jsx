@@ -13,7 +13,10 @@ const ActiveSubMenu = ({ data, isCollection, closeModal, backModal }) => {
  const categoriesList = isCollection ? data?.allCategories : data?.categories;
 
  const handleCategoryClick = async (type, category) => {
- dispatch(getProducts({ type: type, category: category }));
+dispatch(getProducts({
+  type: type.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+  category: category.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+}));
  if (backModal) backModal();
  if (closeModal) closeModal();
  }
@@ -46,7 +49,7 @@ const ActiveSubMenu = ({ data, isCollection, closeModal, backModal }) => {
  return (
  <Link 
  onClick={() => handleCategoryClick(menuName, categoryName)} 
- to={`/collections/${menuName.toLowerCase()}/${categoryName.toLowerCase()}`} 
+ to={`/collections/${category?.path}`} 
  key={index} 
  className="relative group w-full text-left py-3 lg:py-2.5 px-3 text-sm font-medium flex justify-between items-center rounded-lg text-primary hover:text-emerald-500 hover:bg-gray-50 transition-all"
  >

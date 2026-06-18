@@ -36,7 +36,6 @@ import { Toaster } from'react-hot-toast';
 import { fetchSiteData } from'./Redux/thunks/siteDataThunks';
 import RateAndReview from'./Pages/RateAndReview';
 import HomeSkeleton from'./Components/Home/HomeSkeleton';
-// import WhatsAppContactExample from'./Components/WhatsAppContactExample';
 import { useOnlineStatus } from'./Utils/useOnlineStatus';
 
 const App = () => {
@@ -77,19 +76,15 @@ const App = () => {
 
  const removeMaximumScaleFromMeta = (e) => {
  if (['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) {
- // A slight timeout allows iOS to finish its internal keyboard closing animations
- // before we cleanly snap the layout viewport back to normal
  setTimeout(() => {
  metaViewport.setAttribute('content', originalContent);
  }, 100);
  }
  };
 
- // Use'focusin' and'focusout' for absolute precise element targeting on mobile devices
  document.addEventListener('focusin', addMaximumScaleToMeta);
  document.addEventListener('focusout', removeMaximumScaleFromMeta);
 
- // Clean up to prevent memory leaks and restore viewport when unmounting
  return () => {
  document.removeEventListener('focusin', addMaximumScaleToMeta);
  document.removeEventListener('focusout', removeMaximumScaleFromMeta);
@@ -132,7 +127,6 @@ const App = () => {
  <Route path="/collections/:type" element={<Collection />} />
  <Route path="/products" element={<Collection />} />
  <Route path="/review/:orderId" element={<ProtectedRoute><RateAndReview /></ProtectedRoute>} />
- {/* <Route path="/products/:type/:id" element={<Product />} /> */}
  
  {/* User & Checkout */}
  <Route path="/cart" element={<Cart />} />

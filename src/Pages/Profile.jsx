@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTextFavicon } from '../Utils/useTextFavicon';
-import { User, Mail, Phone, Shield, MapPin, ShoppingBag, Edit3, Check, X, BadgeAlert, Eye } from "lucide-react";
+import { User, Mail, Phone, Shield, MapPin, ShoppingBag, Edit3, Check, X, BadgeAlert, Eye, Loader } from "lucide-react";
 import { updateUser } from '../Redux/controllers/crudUser';
 
 const Profile = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { user, error } = useSelector((state) => state.auth);
+    const { user, error, isLoading} = useSelector((state) => state.auth);
     const data = useSelector((state) => state.siteData.data);
 
     const [isEditing, setIsEditing] = useState(false);
@@ -30,8 +30,31 @@ const Profile = () => {
         { bgColor: '#10b981', textColor: '#ffffff' }
     );
 
+console.log(isLoading)
+
     return (
-        <div className="max-w-7xl mx-auto px-4 py-12 min-h-screen bg-white">
+      isLoading ?(<div className="max-w-7xl mx-auto px-4 py-12 min-h-[60vh] flex items-center justify-center">
+    <div className="flex flex-col items-center justify-center p-10 border border-zinc-200 rounded-3xl shadow-sm bg-white max-w-sm w-full text-center relative overflow-hidden">
+        
+        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+
+        <div className="relative flex items-center justify-center w-20 h-20 mb-6">
+            <div className="absolute inset-0 rounded-full bg-indigo-50 animate-ping opacity-70"></div>
+            
+            <div className="relative z-10 w-14 h-14 bg-white border border-indigo-100 shadow-sm rounded-full flex items-center justify-center text-indigo-600">
+               <Loader className='animate-spin ' />
+            </div>
+        </div>
+
+        <h2 className="text-lg font-black tracking-tight text-zinc-900 mb-2">
+            Saving Changes
+        </h2>
+        <p className="text-xs text-zinc-500 font-medium leading-relaxed px-4">
+            Please hold on a moment while we securely update your profile information.
+        </p>
+        
+    </div>
+</div>) :  <div className="max-w-7xl mx-auto px-4 py-12 min-h-screen bg-white">
 
             {/* --- Top Banner & Header --- */}
             <div className="relative border border-zinc-200 rounded-2xl p-6 sm:p-8 shadow-sm bg-white overflow-hidden mb-8">
