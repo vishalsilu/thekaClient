@@ -26,7 +26,6 @@ const displayItems = type
       ...col,
       targetPath: `/collections/${col.path.split('/').filter(Boolean).map(s => s.replace(/[^a-z0-9]+/g, "-")).join('/')}`,
     }));
-console.log(displayItems)
 
  const displayTitle = type && typeCollection ? typeCollection.name :"Our Collections";
 

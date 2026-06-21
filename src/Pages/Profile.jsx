@@ -30,8 +30,6 @@ const Profile = () => {
         { bgColor: '#10b981', textColor: '#ffffff' }
     );
 
-console.log(isLoading)
-
     return (
       isLoading ?(<div className="max-w-7xl mx-auto px-4 py-12 min-h-[60vh] flex items-center justify-center">
     <div className="flex flex-col items-center justify-center p-10 border border-zinc-200 rounded-3xl shadow-sm bg-white max-w-sm w-full text-center relative overflow-hidden">

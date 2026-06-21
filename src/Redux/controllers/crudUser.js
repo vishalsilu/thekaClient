@@ -122,16 +122,16 @@ export const handleLogoutProcess = createAsyncThunk('auth/logoutAndPreserve',
 
  let cartToken = null;
  try {
+   const response = await api.post('/cart/logout-preserve');
+   cartToken = response.data?.cartToken;
+ } catch (err) {
+ }
+ try {
 	 const logoutRes = await api.post('/users/logout');
  } catch (err) {
 	 console.error('[LOGOUT] Server logout error:', err?.response?.data || err?.message);
  }
 
- try {
-	 const response = await api.post('/cart/logout-preserve');
-	 cartToken = response.data?.cartToken;
- } catch (err) {
- }
 
  dispatch(logout());
 

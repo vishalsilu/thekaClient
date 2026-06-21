@@ -164,8 +164,8 @@ const Search = () => {
  </h2>
  </div>
  <div className="grid gap-x-5 gap-y-8 sm:grid-cols-2">
- {products.map((product) => (
- <div key={product.id || product._id} className="transition-transform duration-300 hover:-translate-y-1">
+ {products.map((product , index) => (
+ <div key={product.id + index} className="transition-transform duration-300 hover:-translate-y-1">
  <ProductCard item={product} type={product.type ||'style'} />
  </div>
  ))}

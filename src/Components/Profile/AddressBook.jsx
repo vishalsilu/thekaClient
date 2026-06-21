@@ -26,6 +26,7 @@ const AddressBook = ({ addresses, onAdd, onEdit, onDelete }) => {
  </div>
  </div>
  <p className="font-bold text-lg">{addr.firstName} {addr.lastName}</p>
+ <p className="text-sm text-slate-500 leading-relaxed">{addr.apartment},{addr.street}, {addr.address}</p>
  <p className="text-sm text-slate-500 leading-relaxed">{addr.street}, {addr.city}</p>
  <p className="text-sm text-slate-500">{addr.state} - {addr.zip}</p>
  </div>

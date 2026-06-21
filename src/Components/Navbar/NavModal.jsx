@@ -83,7 +83,11 @@ const NavModal = ({ isClick, closeModal }) => {
  </button>
 
  <button
- onClick={() => { dispatch(logout()); closeModal() }}
+ onClick={() => {
+    if (window.confirm('Are you sure you want to log out?')) {
+        dispatch(logout()); closeModal()
+      }
+  }}
  className='flex items-center justify-center gap-2 h-10 w-full rounded-lg bg-red-50 text-red-600 text-sm font-semibold transition-colors duration-150'
  aria-label="Logout"
  >

@@ -4,10 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Icons
-import { 
-  FaUser, FaBars, FaSearch, FaTimes, FaSignOutAlt, 
-  FaSignInAlt, FaArchive, FaShoppingCart, FaLayerGroup, 
-  FaRegFrown, FaArrowRight, FaMapMarkerAlt 
+import {
+  FaUser, FaBars, FaSearch, FaTimes, FaSignOutAlt,
+  FaSignInAlt, FaArchive, FaShoppingCart, FaLayerGroup,
+  FaRegFrown, FaArrowRight, FaMapMarkerAlt
 } from 'react-icons/fa';
 import { FaBagShopping } from 'react-icons/fa6';
 
@@ -141,9 +141,9 @@ const Navbar = () => {
     };
   }, [searchCollection, searchResult]);
 
-  const hasNoResults = 
-    (!normalizedSearch?.products?.length) && 
-    (!normalizedSearch?.categories?.length) && 
+  const hasNoResults =
+    (!normalizedSearch?.products?.length) &&
+    (!normalizedSearch?.categories?.length) &&
     (!normalizedSearch?.collections?.length);
 
   const handleSearchSubmit = (e) => {
@@ -178,12 +178,11 @@ const Navbar = () => {
 
       {/* --- MAIN NAVBAR CONTAINER --- */}
       <div className="h-auto w-full text-primary border-b border-surface shadow-theme bg-surface">
-        
+
         {/* UPPER ROW: Logo, Search, Actions */}
         <div
-          className={`relative flex items-center justify-between lg:gap-3 px-4 py-3 lg:px-6 lg:py-4 lg:transition-opacity lg:duration-200 ${
-            isHeaderVisible ? 'opacity-100 pointer-events-auto' : 'lg:opacity-0 lg:pointer-events-none'
-          }`}
+          className={`relative flex items-center justify-between lg:gap-3 px-4 py-3 lg:px-6 lg:py-4 lg:transition-opacity lg:duration-200 ${isHeaderVisible ? 'opacity-100 pointer-events-auto' : 'lg:opacity-0 lg:pointer-events-none'
+            }`}
         >
           {/* Mobile Toggle Button */}
           <div className="flex items-center justify-start z-10 lg:w-auto">
@@ -275,7 +274,7 @@ const Navbar = () => {
                       </div>
                     ) : (
                       <div className="space-y-6">
-                        
+
                         {/* Collections */}
                         {normalizedSearch?.collections?.length > 0 && (
                           <div>
@@ -341,12 +340,12 @@ const Navbar = () => {
                                 const variantQuery = prod.variantId
                                   ? `?variant=${prod.variantId}${prod.size ? `&size=${prod.size}` : ''}`
                                   : prod.selectedColor
-                                  ? `?color=${encodeURIComponent(prod.selectedColor)}${prod.size ? `&size=${prod.size}` : ''}`
-                                  : '';
+                                    ? `?color=${encodeURIComponent(prod.selectedColor)}${prod.size ? `&size=${prod.size}` : ''}`
+                                    : '';
 
                                 return (
                                   <Link
-                                    key={prodId || index}
+                                    key={prodId + index}
                                     to={`/product/${collection}/${prodId}${variantQuery}`}
                                     onClick={() => setIsSearchFocused(false)}
                                     className="flex items-center gap-3 group py-2.5 first:pt-0 last:pb-0"
@@ -399,7 +398,7 @@ const Navbar = () => {
 
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center justify-end gap-4 lg:w-auto">
-            
+
             {/* Desktop Cart */}
             <div
               className="relative cursor-pointer group p-2 flex items-center justify-center h-9 w-9 rounded-full hover:bg-gray-100 transition-colors"
@@ -464,7 +463,11 @@ const Navbar = () => {
                           <hr className="border-gray-100 my-2" />
 
                           <button
-                            onClick={() => dispatch(handleLogoutProcess())}
+                            onClick={() => {
+                              if (window.confirm('Are you sure you want to log out?')) {
+                                 dispatch(handleLogoutProcess())
+                              }
+                            }}
                             className="w-full flex items-center gap-3 py-1 text-slate-800 hover:text-red-500 transition-colors text-left"
                           >
                             <FaSignOutAlt className="h-4 w-4 text-slate-900 rotate-180" />
@@ -509,11 +512,11 @@ const Navbar = () => {
 
         {/* --- MODALS --- */}
         {isSearchClick && <SearchModal closeModal={() => setIsSearchClick(false)} />}
-        
+
         <NavModal isClick={isClick} closeModal={() => setIsClick(false)}>
           <NavItems isMobile={true} closeModal={() => setIsClick(false)} />
         </NavModal>
-        
+
       </div>
     </div>
   );

@@ -24,11 +24,26 @@ const AddressForm = ({ initialData, onAddressSaved, onSubmit, onClose, saveToPro
  isDefault: false
  });
 
- useEffect(() => {
- if (initialData) {
- setFormData({ ...initialData });
- }
- }, [initialData]);
+useEffect(() => {
+  if (initialData) {
+    setFormData((prev) => ({
+      ...prev, // Keep your default empty strings
+      ...initialData, // Override with existing data
+      // Explicitly protect against null/undefined from the database:
+      firstName: initialData.firstName || '',
+      lastName: initialData.lastName || '',
+      street: initialData.street || '',
+      apartment: initialData.apartment || '',
+      address: initialData.address || '',
+      city: initialData.city || '',
+      state: initialData.state || '',
+      zip: initialData.zip || '',
+      country: initialData.country || 'India',
+      mobile: initialData.mobile || '',
+      isDefault: initialData.isDefault || false
+    }));
+  }
+}, [initialData]);
 
  const handleChange = (e) => {
  const { name, value, type, checked } = e.target;
@@ -160,7 +175,7 @@ const AddressForm = ({ initialData, onAddressSaved, onSubmit, onClose, saveToPro
 
  <div className="space-y-1">
  <label className="text-[10px] font-bold uppercase tracking-widest">Country</label>
- <input name="country" value={formData.country} type='text' className="w-full bg-surface border border-gray-200 p-3 text-sm outline-none focus:border-black rounded-lg" />
+ <input name="country" value={formData.country} onChange={handleChange} type='text' className="w-full bg-surface border border-gray-200 p-3 text-sm outline-none focus:border-black rounded-lg" />
  </div>
 
  {/* Default Toggle */}
