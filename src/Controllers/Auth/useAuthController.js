@@ -105,6 +105,7 @@ export const useAuthController = () => {
     try {
       let currentPreAuthToken = '';
 
+      // 1. Verify Credentials for Login Mode
       if (mode === 'login') {
         const freshToken = await executeRecaptcha('verify_credentials');
         const verifyRes = await api.post('/users/verify-credentials', {
@@ -113,13 +114,17 @@ export const useAuthController = () => {
           recaptchaToken: freshToken
         });
 
-        if (verifyRes.data.success) {
-          currentPreAuthToken = verifyRes.data.preAuthToken;
-          setPreAuthToken(currentPreAuthToken);
-          toast.loading("Credentials verified! Dispatching OTP...", { id: loadingToast });
+        // 🚨 FIX: Explicit check. If success is false, throw error to jump to catch block
+        if (!verifyRes.data || verifyRes.data.success === false) {
+          throw new Error(verifyRes.data?.error || "Invalid credentials.");
         }
+
+        currentPreAuthToken = verifyRes.data.preAuthToken;
+        setPreAuthToken(currentPreAuthToken);
+        toast.loading("Credentials verified! Dispatching OTP...", { id: loadingToast });
       }
 
+      // 2. Request OTP Code
       const otpToken = await executeRecaptcha('send_otp');
       const payload = {
         email: identifier.trim().toLowerCase(),
@@ -127,23 +132,28 @@ export const useAuthController = () => {
         mode,
       };
 
-      // Add tokens or passwords based on the mode
       if (mode === 'login') {
         payload.preAuthToken = currentPreAuthToken;
       } else if (mode === 'register') {
-        payload.password = password; // Pass the password to be cached by backend
+        payload.password = password; 
       }
 
       const response = await api.post('/users/email/send-otp', payload);
 
-      if (response.data.success) {
-        toast.success("OTP code sent to your email.", { id: loadingToast });
-        setOtpSent(true);
-        setStep(1);
-        startResendTimer();
+      // 🚨 FIX: Explicit check. If OTP sending fails, throw error.
+      if (!response.data || response.data.success === false) {
+        throw new Error(response.data?.error || "Failed to send OTP.");
       }
+
+      // 3. Success Path
+      toast.success("OTP code sent to your email.", { id: loadingToast });
+      setOtpSent(true);
+      setStep(1);
+      startResendTimer();
+      
     } catch (error) {
-      const errorMessage = error.response?.data?.error || error.response?.data?.message || "Something went wrong.";
+      // Handles both manual throws and 500 server crashes cleanly
+      const errorMessage = error.response?.data?.error || error.message || "Something went wrong.";
       toast.error(errorMessage, { id: loadingToast });
     } finally {
       setIsSubmitting(false);
@@ -166,7 +176,7 @@ export const useAuthController = () => {
         recaptchaToken: token, 
         mode,
         preAuthToken,
-        password: mode === 'register' ? password : undefined // Refresh the Redis cache if registering
+        password: mode === 'register' ? password : undefined 
       }));
 
       if (sendOTP.fulfilled.match(resultAction)) {
@@ -205,7 +215,6 @@ export const useAuthController = () => {
           toast.error(resultAction.payload || 'Invalid reset details provided.', { id: verifyingToast });
         }
       } else {
-        // We no longer send the password here. Backend retrieves it from Redis.
         const verifyPayload = { 
             email: identifier.trim().toLowerCase(), 
             otp,
