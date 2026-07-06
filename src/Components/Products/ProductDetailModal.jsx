@@ -123,9 +123,17 @@ const ProductDetail = () => {
  />
  
  {i === 0 && product.deal && (
- <span className="absolute top-4 left-4 bg-stone-950/90 text-white text-[9px] font-black px-2.5 py-1 rounded-md uppercase tracking-wider backdrop-blur-sm">
- {product.deal}
- </span>
+ <span 
+  className={`
+    absolute top-4 left-4 z-10 
+    px-2.5 py-1 rounded-md
+    bg-stone-950/80 backdrop-blur-sm 
+    ring-1 ring-inset ring-emerald-500/50 shadow-lg shadow-emerald-900/20
+    text-emerald-400 text-[9px] font-black uppercase tracking-[0.15em]
+  `}
+>
+  {product.deal}
+</span>
  )}
  </div>
  ))}

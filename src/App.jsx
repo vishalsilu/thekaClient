@@ -1,6 +1,7 @@
 import React, { useEffect } from'react';
 import { Route, Routes } from'react-router-dom';
 import { useDispatch, useSelector } from'react-redux';
+import {Helmet} from "react-helmet-async"
 
 // Layout & Pages
 import ProtectedRoute from'./Utils/ProtectedRoute';
@@ -37,9 +38,14 @@ import { fetchSiteData } from'./Redux/thunks/siteDataThunks';
 import RateAndReview from'./Pages/RateAndReview';
 import HomeSkeleton from'./Components/Home/HomeSkeleton';
 import { useOnlineStatus } from'./Utils/useOnlineStatus';
+import { useState } from 'react';
 
 const App = () => {
- const { token, isAuthenticated } = useSelector((state) => state.auth);
+
+const [isInitializing, setIsInitializing] = useState(true);
+
+
+ const { token, isAuthenticated, user } = useSelector((state) => state.auth);
  const {data,isLoading} = useSelector((state) => state.siteData);
  const dispatch = useDispatch();
 
@@ -53,10 +59,28 @@ const App = () => {
  }, []);
 
 
- useEffect(() => {
- dispatch(getMe());
- dispatch(getCart());
- }, [dispatch]);
+useEffect(() => {
+    const initializeApp = async () => {
+      const token = localStorage.getItem('x-session-token');
+      
+      // 1. Restore User Session
+      if (token && (!user || Object.keys(user).length === 0)) {
+        try {
+          await dispatch(getMe()).unwrap();
+        } catch (error) {
+          console.error("Client session expired or invalid. Clearing local token.");
+          localStorage.removeItem('x-session-token');
+        }
+      }
+
+      // 2. Always fetch the cart (handles both logged-in users and guests via x-cart-token)
+      dispatch(getCart());
+      
+      setIsInitializing(false);
+    };
+
+    initializeApp();
+  }, [dispatch]); // Safe dependency array
 
  useEffect(() => {
  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -93,7 +117,7 @@ const App = () => {
  }
 }, []);
 
- if(!data || isLoading ){
+ if(!data || isLoading || isInitializing ){
  return(
  <HomeSkeleton/>
  )
@@ -101,6 +125,11 @@ const App = () => {
 
  return (
  <>
+<Helmet>
+        <title>LUXESTCH | A Profound Love for Clothes</title>
+        <meta name="description" content="Discover LUXESTCH. High-end fashion born from a pure love for clothes, seamlessly blending raw rural aesthetics with sharp urban silhouettes." />
+      </Helmet>
+ 
  {!isOnline && (
  <div style={{ backgroundColor:'red', color:'white', textAlign:'center', padding:'10px' }}>
  You are currently offline. Some features may be unavailable.

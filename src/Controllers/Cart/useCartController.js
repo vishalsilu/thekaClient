@@ -7,6 +7,7 @@ import { getCart } from'../../Redux/controllers/cartController';
 import { getFeaturedProducts } from'../../Redux/controllers/metaDataController';
 import { useTextFavicon } from'../../Utils/useTextFavicon';
 import { useCoupon } from'../../hooks/useCoupon';
+import toast from 'react-hot-toast';
 
 export const useCartController = () => {
  const dispatch = useDispatch();
@@ -16,10 +17,11 @@ export const useCartController = () => {
  const { items, status, error, cartToken } = useSelector((state) => state.cart);
  const { featuredProducts, couponError } = useSelector((state) => state.metaData);
  const siteData = useSelector((state) => state.siteData.data);
- const { isAuthenticated } = useSelector((state) => state.auth);
+ const { isAuthenticated ,token, isLoading } = useSelector((state) => state.auth);
 
  // UI View State
  const [couponVisible, setCouponVisible] = useState(false);
+
  
  // Track unique item error states mapping keys dynamically
  const [localItemErrors, setLocalItemErrors] = useState({});
@@ -75,7 +77,13 @@ export const useCartController = () => {
  };
 
  const handleNavigateToCheckout = () => {
- navigate('/checkout');
+    if(!isLoading && !isAuthenticated || !token){
+        toast.error("Please login to your account to complete order", {id:loadingToast})
+        navigate('/login')
+    }else{
+         navigate('/checkout');
+    }
+    
  };
 
  /**

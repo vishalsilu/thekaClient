@@ -71,7 +71,7 @@ export const verifyOTP = createAsyncThunk('auth/verifyOTP', async (otpData, thun
 
 export const completeRegistration = createAsyncThunk('auth/completeRegistration', async (profileData, thunkAPI) => {
   try {
-    const response = await api.post('/users/complete-registration', profileData);
+    const response = await api.post('/users/email/complete-registration', profileData);
     
     if (response.data.success === false) {
       return thunkAPI.rejectWithValue(response.data.error || "Profile initialization failed");
@@ -88,7 +88,7 @@ export const completeRegistration = createAsyncThunk('auth/completeRegistration'
 
 export const resetPassword = createAsyncThunk('auth/resetPassword', async (payload, thunkAPI) => {
   try {
-    const response = await api.post('/users/reset-password', payload);
+    const response = await api.post('/users/email/reset-password', payload);
     
     if (response.data.success === false) {
       return thunkAPI.rejectWithValue(response.data.error || "Password reset failed");
@@ -160,34 +160,28 @@ export const deleteAddress = createAsyncThunk('address/delete', async (userData,
     return thunkAPI.rejectWithValue(error.response?.data?.error || "Failed to delete address");
   } 
 });
-
 export const handleLogoutProcess = createAsyncThunk('auth/logoutAndPreserve',
   async (_, { dispatch }) => {
     try {
+      // 1. Preserve Cart
       let cartToken = null;
       try {
         const response = await api.post('/cart/logout-preserve');
-        // Check for success flag even on logout preservation
         if (response.data.success !== false) {
           cartToken = response.data?.cartToken;
         }
-      } catch (err) {
-      }
+      } catch (err) {}
       
+      // 2. Backend Logout
       try {
         await api.post('/users/logout');
-        // Removed console.error here. A failed logout shouldn't spam the console.
-        // It simply fails silently and cleans up the frontend state.
-      } catch (err) {
-      }
+      } catch (err) {}
 
-      dispatch(logout());
-
+      // 3. Wipe Axios & Local Storage IMMEDIATELY
       if (api.defaults.headers.common['Authorization']) {
         delete api.defaults.headers.common['Authorization'];
       }
-
-      clearSessionToken();
+      clearSessionToken(); // Assuming this removes 'x-session-token'
 
       if (cartToken) {
         localStorage.setItem('x-cart-token', cartToken);
@@ -195,12 +189,23 @@ export const handleLogoutProcess = createAsyncThunk('auth/logoutAndPreserve',
         localStorage.removeItem('x-cart-token');
       }
 
-      dispatch(getCart());
+      // 4. Clear Redux State
+      dispatch(logout());
+
+      // 5. THE MOBILE BUG FIX: Hard Redirect
+      // Instead of dispatching getCart() and staying on the page, 
+      // we force the mobile browser to completely wipe its memory and reload.
+      // The new page load will automatically fetch the preserved cart anyway.
+      window.location.href = '/login'; 
+
     } catch (error) {
       // Fallback cleanup
-      dispatch(logout());
-      localStorage.removeItem('x-cart-token');
       clearSessionToken();
+      localStorage.removeItem('x-cart-token');
+      dispatch(logout());
+      
+      // Force reload on error too
+      window.location.href = '/login';
     }
   }
 );

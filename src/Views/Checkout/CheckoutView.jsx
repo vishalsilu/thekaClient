@@ -155,7 +155,7 @@ const CheckoutView = ({ controller }) => {
                   : 'bg-black text-white hover:bg-zinc-800 shadow-zinc-200'
                 }`}
               >
-                {placing ? 'Placing Order…' : 'Pay Now & Complete Order'}
+                {placing ? 'Placing Order…' : 'Complete Order'}
               </button>
             )}
           </div>

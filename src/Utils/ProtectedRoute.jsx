@@ -2,7 +2,8 @@ import { useSelector } from'react-redux';
 import { Navigate, useLocation } from'react-router-dom';
 
 const ProtectedRoute = ({ children }) => {
- const { isAuthenticated, isLoading,token } = useSelector((state) => state.auth);
+ const { isAuthenticated, isLoading,token  } = useSelector((state) => state.auth);
+
  const location = useLocation();
 
  // While checking if user is logged in, show nothing or a loader

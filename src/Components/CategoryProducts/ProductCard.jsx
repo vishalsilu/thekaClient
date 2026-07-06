@@ -12,6 +12,8 @@ const ProductCard = ({ item, type, host }) => {
  const navigate = useNavigate();
  const [open, setOpen] = useState(false);
 
+ console.log(item)
+
 
  // Fallback calculations for safety
  const price = Number(item?.price) || 0;
@@ -31,12 +33,21 @@ const ProductCard = ({ item, type, host }) => {
  {/* 1. Image & Overlay Badges */}
  <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xl bg-stone-50 cursor-pointer" onClick={() => handleClick(item)}>
  
- {/* Host Type Badge */}
- {host && item?.type && (
- <div className={`absolute top-2 ${item?.trending ?'right-2' :'left-2'} z-20 rounded-lg bg-black/80 text-white backdrop-blur-sm px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider `}>
- {item.type}
- </div>
- )}
+{/* Host Type Badge - Premium Glass */}
+{host && item?.type && (
+  <div 
+    className={`
+      absolute top-3 ${item?.trending ? 'right-3' : 'left-3'} z-20 
+      px-3 py-1 rounded-full 
+      bg-white/10 backdrop-blur-md border border-white/20 
+      shadow-lg shadow-black/30
+      text-white text-[10px] font-bold uppercase tracking-[0.2em] 
+      transition-all duration-300 hover:scale-105 hover:bg-white/20
+    `}
+  >
+    {item.type}
+  </div>
+)}
  
  {/* Trending Badge */}
  {item?.trending && (
