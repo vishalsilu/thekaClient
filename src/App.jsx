@@ -127,7 +127,7 @@ useEffect(() => {
  <>
 <Helmet>
         <title>LUXESTCH | A Profound Love for Clothes</title>
-        <meta name="description" content="Discover LUXESTCH. High-end fashion born from a pure love for clothes, seamlessly blending raw rural aesthetics with sharp urban silhouettes." />
+        <meta name="description" content="Discover LUXESTCH.High-end fashion born from a pure love for clothes, seamlessly blending raw rural aesthetics with sharp urban silhouettes." />
       </Helmet>
  
  {!isOnline && (
