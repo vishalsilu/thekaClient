@@ -77,8 +77,8 @@ export const useCartController = () => {
  };
 
  const handleNavigateToCheckout = () => {
-    if(!isLoading && !isAuthenticated || !token){
-        toast.error("Please login to your account to complete order", {id:loadingToast})
+    if( !isAuthenticated){
+        toast.error("Please login to your account to complete order")
         navigate('/login')
     }else{
          navigate('/checkout');

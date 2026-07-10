@@ -29,6 +29,13 @@ const ContactUs = () => {
     textColor: '#ffffff',
   });
 
+
+  const Address = (add) => {
+    const {other,appartment,street,city,state,pin} = add;
+ const completeAdd = `${other} ,${appartment} ,${street} ,${city} ,${state} ,${pin}` 
+ return completeAdd; 
+}
+
   const handleTicketSubmit = useCallback(async (formData) => {
     if (!executeRecaptcha) {
       throw new Error('Security check unavailable. Please wait a moment and try again.');
@@ -148,7 +155,7 @@ const ContactUs = () => {
         {/* RIGHT COLUMN: INFORMATION */}
         <div className="lg:col-span-4 space-y-10">
           <div className="flex flex-col gap-4">
-            <p className="text-sm"><span className="font-bold">Address:</span> {contactInfo?.address}</p>
+            <p className="text-sm"><span className="font-bold">Address:</span> {Address(contactInfo?.address)}</p>
             <p className="text-sm"><span className="font-bold">Phone:</span> {contactInfo?.phone}</p>
             <p className="text-sm"><span className="font-bold">Email:</span> {contactInfo?.email}</p>
             <div className="flex items-center gap-4 mt-2">

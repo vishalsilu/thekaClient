@@ -16,6 +16,12 @@ const Footer = () => {
  const { isAuthenticated, user } = useSelector((state) => state.auth);
  const [subscribed, setSubscribed] = useState(null);
 
+
+const Address = (add) => {
+    const {other,appartment,street,city,state,pin} = add;
+ const completeAdd = `${other} ,${appartment} ,${street} ,${city} ,${state} ,${pin}` 
+ return completeAdd; 
+}
  useEffect(() => {
  let mounted = true;
  const check = async () => {
@@ -172,7 +178,7 @@ const Footer = () => {
  <div className="space-y-4">
  <div className="flex flex-col gap-3 text-[11px] font-bold uppercase">
  <p className="text-[11px] font-bold leading-relaxed flex items-center gap-3">
- <span className='text-gray-400'><MapPin size={16}/></span> {Data?.contact?.address}
+ <span className='text-gray-400'><MapPin size={16}/></span> {Address(Data?.contact?.address)}
  </p>
  <p className="text-[11px] font-bold leading-relaxed flex items-center gap-3">
  <span className='text-gray-400'><PhoneCall size={16}/></span> {Data?.contact?.phone}
