@@ -87,9 +87,9 @@ useEffect(() => {
  };
 
  return (
- <div className="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-4 bg-surface backdrop-blur-sm">
- <div className=" p-8 rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto no-scrollbar border border-slate-100">
- <div className="relative grid grid-cols-1 md:grid-cols-2 gap-5 animate-in fade-in zoom-in duration-300">
+ <div className="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-4  backdrop-blur-sm">
+ <div className=" p-8 rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto no-scrollbar border border-slate-100 bg-white">
+ <div className="relative grid grid-cols-1 md:grid-cols-2 gap-5 animate-in fade-in zoom-in duration-300 ">
  
  {/* Header */}
  <div className="md:col-span-2 flex justify-between items-center mb-2">
@@ -170,7 +170,10 @@ useEffect(() => {
  {/* Row 6: Mobile & Country */}
  <div className="space-y-1">
  <label className="text-[10px] font-bold uppercase tracking-widest">Mobile Number *</label>
- <input name="mobile" value={formData.mobile} onChange={handleChange} required type='text' className="w-full bg-surface border border-gray-200 p-3 text-sm outline-none focus:border-black rounded-lg" />
+ <input  name="mobile" maxLength={10} value={formData.mobile} onChange={(e) => {
+    e.target.value = e.target.value.replace(/\D/g, '');
+    handleChange(e);
+  }} required type='tel' className="w-full bg-surface border border-gray-200 p-3 text-sm outline-none focus:border-black rounded-lg" />
  </div>
 
  <div className="space-y-1">

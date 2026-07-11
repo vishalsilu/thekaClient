@@ -51,7 +51,7 @@ const OrderDetail = () => {
       `Shipping Phone: ${customerMobile}`,
       `Shipping Address: ${shippingAddress.addressLine1 || shippingAddress.address || 'N/A'}${shippingAddress.city ? ', ' + shippingAddress.city : ''}${shippingAddress.state ? ', ' + shippingAddress.state : ''}${shippingAddress.zip ? ' - ' + shippingAddress.zip : ''}`,
       '',
-      'Please help me resolve this issue as soon as possible.',
+      'Please enter your message ',
     ].join('\n');
 
     navigate('/contact-us', {
@@ -400,8 +400,8 @@ const OrderDetail = () => {
                 >
                   {isCanceled ? 'Continue Shopping' : isDelivered ? 'Initiate Return' : 'Contact Support'}
                 </button>
-                <button className="w-full py-4 border border-neutral-300 text-[12px] font-bold uppercase tracking-widest hover:border-emerald-500 hover:text-emerald-500 hover:opacity-40 transition-colors">
-                  {isCanceled ? 'Refund Status' : 'Shipping Policy'}
+                <button onClick={(e)=>isDelivered || isCanceled ? handleSupportClick(e) : navigate('/info/shipping-information')} className="w-full py-4 border border-neutral-300 text-[12px] font-bold uppercase tracking-widest hover:border-emerald-500 hover:text-emerald-500 hover:opacity-40 transition-colors">
+                  {isCanceled ? 'Refund Status' : isDelivered ? "Request Return" : "Shipping Policy"}
                 </button>
               </div>
             </div>

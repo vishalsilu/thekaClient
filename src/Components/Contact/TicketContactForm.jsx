@@ -1,38 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { Link } from 'react-router-dom';
 
 const TicketContactForm = ({ onSubmit, initialData, user, title, subtitle }) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [subject, setSubject] = useState(initialData?.subject || '');
   const [message, setMessage] = useState(initialData?.message || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Sync user info if logged in, or sync initial configuration data
+  useEffect(() => {
+    if (user) {
+      setName(`${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Customer');
+      setEmail(user.email || '');
+    }
+  }, [user]);
 
   useEffect(() => {
     if (initialData?.subject) setSubject(initialData.subject);
     if (initialData?.message) setMessage(initialData.message);
   }, [initialData]);
 
-  // If the user is not logged in, they cannot create a trackable ticket
-  if (!user) {
-    return (
-      <div className="w-full border border-stone-200 bg-stone-50 p-8 text-center flex flex-col items-center justify-center min-h-[300px]">
-        <span className="text-4xl mb-4 opacity-50">🎫</span>
-        <h3 className="text-xl font-bold mb-2">Login Required</h3>
-        <p className="text-sm text-stone-500 mb-6 max-w-sm">
-          To create and track support tickets, you need an account. Please log in or use the WhatsApp option above.
-        </p>
-        <Link 
-          to="/login" 
-          className="bg-black text-white px-6 py-3 text-xs font-bold uppercase tracking-[0.1em] hover:bg-stone-800 transition-colors"
-        >
-          Go to Login
-        </Link>
-      </div>
-    );
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Field completeness safety guards
+    if (!name.trim() || !email.trim()) {
+      toast.error('Please provide your name and email address.');
+      return;
+    }
     if (!subject.trim() || !message.trim()) {
       toast.error('Please provide both a subject and a message.');
       return;
@@ -40,11 +36,18 @@ const TicketContactForm = ({ onSubmit, initialData, user, title, subtitle }) => 
 
     setIsSubmitting(true);
     try {
-      await onSubmit({ subject, message });
+      // Pass guest details along with the ticket body
+      await onSubmit({ name, email, subject, message });
       toast.success('Support ticket created successfully!');
+      
       if (!initialData) {
         setSubject('');
         setMessage('');
+        // Only clear name/email if submission was a guest action
+        if (!user) {
+          setName('');
+          setEmail('');
+        }
       }
     } catch (error) {
       toast.error(error?.response?.data?.error || error.message || 'Failed to create ticket.');
@@ -63,21 +66,35 @@ const TicketContactForm = ({ onSubmit, initialData, user, title, subtitle }) => 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
-            <label className="block text-[10px] font-bold uppercase tracking-[0.1em] text-stone-500 mb-1">Name</label>
+            <label className="block text-[10px] font-bold uppercase tracking-[0.1em] text-stone-500 mb-1">Name *</label>
             <input 
               type="text" 
-              value={`${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Customer'} 
-              disabled 
-              className="w-full border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-500 cursor-not-allowed" 
+              required
+              value={name} 
+              onChange={(e) => setName(e.target.value)}
+              disabled={!!user} 
+              placeholder="Your full name"
+              className={`w-full border px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors ${
+                user 
+                  ? 'border-stone-200 bg-stone-50 text-stone-500 cursor-not-allowed' 
+                  : 'border-stone-300 bg-white text-stone-900'
+              }`} 
             />
           </div>
           <div>
-            <label className="block text-[10px] font-bold uppercase tracking-[0.1em] text-stone-500 mb-1">Email</label>
+            <label className="block text-[10px] font-bold uppercase tracking-[0.1em] text-stone-500 mb-1">Email *</label>
             <input 
               type="email" 
-              value={user.email} 
-              disabled 
-              className="w-full border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-500 cursor-not-allowed" 
+              required
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={!!user} 
+              placeholder="your.email@example.com"
+              className={`w-full border px-4 py-3 text-sm focus:outline-none focus:border-black transition-colors ${
+                user 
+                  ? 'border-stone-200 bg-stone-50 text-stone-500 cursor-not-allowed' 
+                  : 'border-stone-300 bg-white text-stone-900'
+              }`} 
             />
           </div>
         </div>

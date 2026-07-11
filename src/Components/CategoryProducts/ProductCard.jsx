@@ -12,9 +12,6 @@ const ProductCard = ({ item, type, host }) => {
  const navigate = useNavigate();
  const [open, setOpen] = useState(false);
 
- console.log(item)
-
-
  // Fallback calculations for safety
  const price = Number(item?.price) || 0;
  const originalPrice = Number(item?.originalPrice || item?.price) || 0;

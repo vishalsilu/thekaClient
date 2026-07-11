@@ -18,7 +18,8 @@ export const generateProfessionalInvoiceHTML = (orderData, siteData) => {
 
   // Meta details
   const companyName = siteData?.websiteName || 'LUXE';
-  const companyAddr = siteData?.contact?.address || '128 Madison Avenue\nNew York, NY 10116';
+  const companyAddr = siteData?.contact?.address;
+  const finalAddress = `${companyAddr.appartment}, ${companyAddr.other}, ${companyAddr.street}, ${companyAddr.city}, ${companyAddr.state}, ${companyAddr.pin}`
   const companyEmail = siteData?.contact?.email || 'support@luxe.com';
   const companyPhone = siteData?.contact?.phone || '+1 (212) 555-0132';
   const logoImg = siteData?.logoUrl ? `<img src="${siteData.logoUrl}" class="logo" onerror="this.style.display='none'"/>` : `<h2 style="margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px;">${companyName}</h2>`;
@@ -42,6 +43,7 @@ export const generateProfessionalInvoiceHTML = (orderData, siteData) => {
         <td>
           <div class="item-name">${i.name || i.title || 'Product'}</div>
           ${i.variant ? `<div class="item-meta">Variant: ${i.variant}</div>` : ''}
+          ${i.size ? `<div class="item-meta">Size: ${i.size}</div>` : ''}
           ${i.sku ? `<div class="item-meta">SKU: ${i.sku}</div>` : ''}
         </td>
         <td class="text-right">₹${unit.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
@@ -85,8 +87,8 @@ export const generateProfessionalInvoiceHTML = (orderData, siteData) => {
         margin-bottom: 32px;
       }
       .logo {
-        max-height: 50px;
-        max-width: 180px;
+        max-height: 80px;
+        max-width: 230px;
         object-fit: contain;
       }
       .company-details {
@@ -271,14 +273,14 @@ export const generateProfessionalInvoiceHTML = (orderData, siteData) => {
         <div>
           ${logoImg}
           <div class="company-details">
-            ${companyAddr}<br>
+            ${finalAddress}<br>
             Email: ${companyEmail}<br>
             Phone: ${companyPhone}
           </div>
         </div>
         <div class="invoice-title">
-          <h1>INVOICE</h1>
-          <div class="invoice-meta-top">
+        <h1>${companyName}</h1>
+        <div class="invoice-meta-top">
             <div>Invoice No: <span>#${invoiceNo}</span></div>
             <div>Date: <span>${created}</span></div>
           </div>

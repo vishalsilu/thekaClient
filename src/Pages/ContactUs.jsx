@@ -48,6 +48,8 @@ const ContactUs = () => {
     }
 
     const payload = {
+      name:formData.name,
+      email:formData.email,
       subject: formData.subject || orderHelpInfo?.subject || 'Support Request',
       message: formData.message || orderHelpInfo?.message || '',
     };
@@ -55,7 +57,11 @@ const ContactUs = () => {
     const response = await api.post('/support/user', payload);
     
     // Automatically switch to the "My Tickets" tab after successful creation
-    setSelectedChannel('history');
+    if(user){
+      setSelectedChannel('history');
+    }else{
+      setSelectedChannel('ticket')
+    }
 
     return response;
   }, [executeRecaptcha, orderHelpInfo]);
@@ -81,7 +87,7 @@ const ContactUs = () => {
           <p className="text-gray-500 mb-8">{contactInfo?.subHeading || "Choose a channel below to get in touch with our support team."}</p>
 
           {/* DYNAMIC TAB NAVIGATION */}
-          <div className={`grid gap-3 mb-8 ${user ? 'grid-cols-2' : 'grid-cols-2'}`}>
+          <div className={`grid gap-3 mb-8 ${user ? 'grid-cols-2' : 'grid-cols-1'}`}>
             {/* <button
               type="button"
               className={`w-full px-4 py-3 text-sm rounded-md transition-all font-bold border ${
@@ -102,7 +108,7 @@ const ContactUs = () => {
               }`}
               onClick={() => setSelectedChannel('ticket')}
             >
-              New Ticket
+              {user ? "New Ticket" : "Get In Touch With Us"}
             </button>
             {/* Only show 'My Tickets' button if user is logged in */}
             {user && (
