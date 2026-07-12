@@ -32,7 +32,7 @@ import ScrollToTop from'./Utils/ScrollToTop';
 import { getMe } from'./Redux/controllers/crudUser';
 import { getCollections } from'./Redux/controllers/metaDataController';
 import ProductDetail from'./Components/Products/ProductDetailModal';
-import { getCart } from'./redux/controllers/cartController';
+import { getCart } from'./Redux/controllers/cartController';
 import { Toaster } from'react-hot-toast';
 import { fetchSiteData } from'./Redux/thunks/siteDataThunks';
 import RateAndReview from'./Pages/RateAndReview';

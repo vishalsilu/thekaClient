@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from'react-redux';
 import { useNavigate } from'react-router-dom';
 import { toast } from'react-hot-toast';
 import { addAddress, updateAddress, deleteAddress } from'../Redux/controllers/crudUser';
-import { fetchMyOrders } from'../redux/thunks/orderThunks';
+import { fetchMyOrders } from'../Redux/thunks/orderThunks';
 import { clearError } from'../Redux/slices/authSlice';
 import { confirmAction } from'../Utils/alertHelper';
 

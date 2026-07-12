@@ -2,7 +2,7 @@ import React, { useEffect, useState } from'react';
 import { useDispatch, useSelector } from'react-redux';
 import { useTextFavicon } from'../Utils/useTextFavicon';
 import OrderList from'../Components/Profile/OrderList';
-import { fetchMyOrders } from'../redux/thunks/orderThunks';
+import { fetchMyOrders } from'../Redux/thunks/orderThunks';
 
 const Orders = () => {
 const dispatch = useDispatch();

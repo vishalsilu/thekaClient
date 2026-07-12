@@ -1,7 +1,7 @@
 import { useState, useMemo } from'react';
 import { useDispatch, useSelector } from'react-redux';
 import { validateCoupon } from'../Redux/controllers/metaDataController';
-import { removeAppliedCoupon } from'../redux/slices/metaDataSlice';
+import { removeAppliedCoupon } from'../Redux/slices/metaDataSlice';
 
 export const useCoupon = (subtotal, isAuthenticated = true) => {
  const [couponInput, setCouponInput] = useState("");
