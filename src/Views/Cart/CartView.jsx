@@ -4,6 +4,7 @@ import CartItem from'../../Components/Cart/CartItem';
 import ProductCard from'../../Components/CategoryProducts/ProductCard';
 import { RiCoupon4Line, RiErrorWarningLine } from'react-icons/ri';
 import AdvertisementBanner from '../../Components/Ads/AdvertisementBanner';
+import toast, { Toaster } from 'react-hot-toast';
 
 const SYNC_LABEL = {
  idle:'Ready',
@@ -18,13 +19,14 @@ const CartView = ({ controller }) => {
  couponVisible, setCouponVisible, cartRefShort, totalUnits, subtotal,
  couponInput, setCouponInput, isAnimating, discountAmount, appliedCoupon,
  shipping, couponType, total, handleApplyCoupon, removeCoupon,
- handleUpdateQuantity, handleRemoveFromCart, handleNavigateToProduct, handleNavigateToCheckout
+ handleUpdateQuantity, handleRemoveFromCart, handleNavigateToProduct, handleNavigateToCheckout,isAuthenticated,token
  } = controller;
 
  return (
  <div className="min-h-screen bg-white text-zinc-900 selection:bg-zinc-900 selection:text-white antialiased">
+   <Toaster position="top-right"/>
  <main className="max-w-[1200px] mx-auto px-4 md:px-8 pt-12 md:pt-16">
- 
+
  {/* Error Banner Notification */}
  {status ==='failed' && error && (
  <div className="mb-6 flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-xl text-red-800 text-[11px] font-bold uppercase tracking-wider">
@@ -116,7 +118,7 @@ const CartView = ({ controller }) => {
  className="flex-1 bg-zinc-50 col-span-2 text-black border border-zinc-200 text-[11px] font-bold tracking-[0.15em] px-4 py-3 focus:outline-none focus:border-black uppercase rounded-lg"
  />
  <button
- onClick={() => handleApplyCoupon()}
+ onClick={() => isAuthenticated ? handleApplyCoupon() : toast.error("Please Login to apply coupon code!")}
  className="bg-black text-white px-6 py-3 text-[10px] font-black uppercase tracking-[0.25em] rounded-lg active:scale-95 hover:bg-zinc-800 transition-all"
  >
  Apply
@@ -180,7 +182,7 @@ const CartView = ({ controller }) => {
  <button
  type="button"
  disabled={status ==='loading'}
- onClick={handleNavigateToCheckout}
+ onClick={()=>isAuthenticated  ? handleNavigateToCheckout() : toast.error("Please Login for Secure Checkout")}
  className={`w-full py-5 rounded-2xl text-[11px] font-black uppercase tracking-[0.3em] transition-all active:scale-[0.98] shadow-sm ${
  status ==='loading' 
  ?'bg-zinc-100 text-zinc-400 cursor-not-allowed shadow-none' 

@@ -152,6 +152,7 @@ export const useCartController = () => {
  subtotal,
  // Coupon Values
  ...couponService,
+ isAuthenticated,token,
  // Handlers
  handleUpdateQuantity,
  handleRemoveFromCart,

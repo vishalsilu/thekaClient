@@ -5,6 +5,7 @@ import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { sendOTP, verifyOTP, completeRegistration, resetPassword } from '../../Redux/controllers/crudUser';
 import api from '../../config/api';
 import toast from 'react-hot-toast';
+import { LayoutList } from 'lucide-react';
 
 export const useAuthController = () => {
   const dispatch = useDispatch();
@@ -12,7 +13,7 @@ export const useAuthController = () => {
   const { executeRecaptcha } = useGoogleReCaptcha();
 
   const siteData = useSelector((state) => state.siteData.data);
-  
+
   const [step, setStep] = useState(1);
   const [mode, setMode] = useState('login');
   const [identifier, setIdentifier] = useState('');
@@ -24,12 +25,14 @@ export const useAuthController = () => {
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
   const [regToken, setRegToken] = useState('');
-  const [preAuthToken, setPreAuthToken] = useState(''); 
-  
+  const [preAuthToken, setPreAuthToken] = useState('');
+
   const [loading, setLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
+  const [isSubscribed, setIsSubscribed] = useState(true);
   const timerRef = useRef(null);
+
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -62,7 +65,7 @@ export const useAuthController = () => {
     setPassword('');
     setConfirmPassword('');
     setRegToken('');
-    setPreAuthToken(''); 
+    setPreAuthToken('');
   };
 
   const handleRestart = () => {
@@ -77,7 +80,7 @@ export const useAuthController = () => {
     setLastName('');
     setPhone('');
     setRegToken('');
-    setPreAuthToken(''); 
+    setPreAuthToken('');
     setTimeLeft(0);
   };
 
@@ -135,7 +138,7 @@ export const useAuthController = () => {
       if (mode === 'login') {
         payload.preAuthToken = currentPreAuthToken;
       } else if (mode === 'register') {
-        payload.password = password; 
+        payload.password = password;
       }
 
       const response = await api.post('/users/email/send-otp', payload);
@@ -150,7 +153,7 @@ export const useAuthController = () => {
       setOtpSent(true);
       setStep(1);
       startResendTimer();
-      
+
     } catch (error) {
       // Handles both manual throws and 500 server crashes cleanly
       const errorMessage = error.response?.data?.error || error.message || "Something went wrong.";
@@ -170,13 +173,13 @@ export const useAuthController = () => {
 
     try {
       const token = await executeRecaptcha('resend_otp');
-      
-      const resultAction = await dispatch(sendOTP({ 
-        email: identifier.trim().toLowerCase(), 
-        recaptchaToken: token, 
+
+      const resultAction = await dispatch(sendOTP({
+        email: identifier.trim().toLowerCase(),
+        recaptchaToken: token,
         mode,
         preAuthToken,
-        password: mode === 'register' ? password : undefined 
+        password: mode === 'register' ? password : undefined
       }));
 
       if (sendOTP.fulfilled.match(resultAction)) {
@@ -215,16 +218,17 @@ export const useAuthController = () => {
           toast.error(resultAction.payload || 'Invalid reset details provided.', { id: verifyingToast });
         }
       } else {
-        const verifyPayload = { 
-            email: identifier.trim().toLowerCase(), 
-            otp,
-            mode
+        const verifyPayload = {
+          email: identifier.trim().toLowerCase(),
+          otp,
+          mode
         };
-        
+
         const resultAction = await dispatch(verifyOTP(verifyPayload));
 
         if (verifyOTP.fulfilled.match(resultAction)) {
           if (resultAction.payload.registrationRequired) {
+            const subscribeNewsletter = await await api.post('/subscribers', { email: identifier.trim().toLowerCase(), source: 'Register' });
             toast.success('Account created! You can now complete your profile.', { id: verifyingToast });
             setRegToken(resultAction.payload.registrationToken);
             setStep(2);
@@ -257,6 +261,7 @@ export const useAuthController = () => {
         registrationToken: regToken,
       }));
 
+
       if (completeRegistration.fulfilled.match(resultAction)) {
         toast.success(`Profile updated! Welcome.`, { id: creatingToast });
         navigate('/');
@@ -282,7 +287,7 @@ export const useAuthController = () => {
     lastName, setLastName,
     phone, setPhone,
     loading, isSubmitting, timeLeft, siteData,
-    preAuthToken, 
+    preAuthToken,
     formatTime,
     handleChooseMode,
     handleRestart,
@@ -291,5 +296,6 @@ export const useAuthController = () => {
     handleVerifyOTP,
     handleResendOTP,
     handleCompleteProfileRegistration,
+    isSubscribed, setIsSubscribed
   };
 };

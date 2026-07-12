@@ -1,5 +1,6 @@
 ﻿import { ArrowLeftIcon } from 'lucide-react';
 import React from 'react';
+import { useState } from 'react';
 
 const AuthView = ({ controller }) => {
   const {
@@ -7,10 +8,11 @@ const AuthView = ({ controller }) => {
     lastName, phone, loading, isSubmitting, timeLeft, siteData, formatTime, 
     handleChooseMode, setIdentifier, setPassword, setConfirmPassword, 
     setFirstName, setLastName, setPhone, setOtp, handleIdentifierSubmit, 
-    handleProfileSubmit, handleVerifyOTP, handleResendOTP, handleRestart, setStep
+    handleProfileSubmit, handleVerifyOTP, handleResendOTP, handleRestart,isSubscribed, setIsSubscribed, setStep
   } = controller;
 
   const showOtpInput = otpSent || timeLeft > 0;
+ 
   
   const headerLabel = step === 1 
     ? (showOtpInput ? (mode === 'forgot' ? 'Reset Your Password' : 'Enter OTP Confirmation') : (mode === 'login' ? 'Sign In' : mode === 'register' ? 'Create Account' : 'Reset Password'))
@@ -89,14 +91,42 @@ const AuthView = ({ controller }) => {
             </button>
           )}
 
-          <div className="flex items-center justify-between pt-2">
-            {step > 1 && <button type="button" onClick={handleRestart} className="text-[9px] font-black uppercase text-zinc-400 hover:text-black">Reset</button>}
-            {otpSent && (
-              <div className="text-[10px] text-zinc-500">
-                {timeLeft > 0 ? <>Resend in {formatTime(timeLeft)}</> : <button onClick={handleResendOTP} className="font-bold underline text-black">Resend Code</button>}
-              </div>
-            )}
-          </div>
+          <div className="flex flex-col items-start gap-5 justify-center pt-2">
+  {step > 1 && (
+    <button 
+      type="button" 
+      onClick={handleRestart} 
+      className="text-[9px] font-black uppercase text-zinc-400 hover:text-black"
+    >
+      Reset
+    </button>
+  )}
+  
+  {otpSent && (
+    <div className="text-[10px] text-zinc-500">
+      {timeLeft > 0 ? (
+        <>Resend in {formatTime(timeLeft)}</>
+      ) : (
+        <button onClick={handleResendOTP} className="font-bold underline text-black">
+          Resend Code
+        </button>
+      )}
+    </div>
+  )}
+
+  {/* 2. Replaced your second duplicate block with this checkbox label */}
+ {showOtpInput && mode === 'register' && ( <label className="flex items-start gap-2 text-[10px] text-zinc-500 cursor-pointer">
+    <input
+      type="checkbox"
+      checked={isSubscribed}
+      onChange={(e) => setIsSubscribed(e.target.checked)}
+      className="mt-[2px] w-3 h-3 accent-black cursor-pointer" 
+    />
+    <span className="leading-tight">
+      I agree to subscribe to get the latest updates very first to grab hot deals and offers
+    </span>
+  </label>)}
+</div>
         </div>
       )}
 
@@ -106,8 +136,19 @@ const AuthView = ({ controller }) => {
           <div className="grid grid-cols-2 gap-3">
             <div><label className="block text-[9px] font-black uppercase text-zinc-400">First Name</label><input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg text-sm outline-none" /></div>
             <div><label className="block text-[9px] font-black uppercase text-zinc-400">Last Name</label><input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg text-sm outline-none" /></div>
-            <div className="col-span-2"><label className="block text-[9px] font-black uppercase text-zinc-400">Phone</label><input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg text-sm outline-none" /></div>
-          </div>
+<div className="col-span-2">
+  <label className="block text-[9px] font-black uppercase text-zinc-400">Phone</label>
+  <input 
+    type="tel" 
+    maxLength={10} 
+    value={phone} 
+    onChange={(e) => {
+      const numericValue = e.target.value.replace(/[^0-9]/g, '');
+      setPhone(numericValue);
+    }} 
+    className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg text-sm outline-none" 
+  />
+</div>          </div>
           <button type="submit" className="w-full py-2.5 text-[10px] font-black uppercase rounded-lg bg-zinc-900 text-white">Save Profile</button>
         </form>
       )}

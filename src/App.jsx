@@ -159,7 +159,7 @@ useEffect(() => {
  
  {/* User & Checkout */}
  <Route path="/cart" element={<Cart />} />
- <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
+ <Route path="/checkout" element={<CheckoutPage />} />
  <Route path="/thank-you" element={<ProtectedRoute><ThankYou /></ProtectedRoute>} />
  <Route path="/orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
  <Route path="/addresses" element={<ProtectedRoute><Addresses /></ProtectedRoute>} />

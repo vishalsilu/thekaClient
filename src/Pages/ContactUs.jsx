@@ -13,10 +13,10 @@ const ContactUs = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const orderHelpInfo = location.state?.orderHelp;
-  
+
   // State handles 3 modes now: 'whatsapp', 'ticket', 'history'
   const [selectedChannel, setSelectedChannel] = useState(orderHelpInfo ? 'ticket' : 'ticket');
-  
+
   const data = useSelector((state) => state.siteData.data);
   const user = useSelector((state) => state.auth.user);
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -31,10 +31,10 @@ const ContactUs = () => {
 
 
   const Address = (add) => {
-    const {other,appartment,street,city,state,pin} = add;
- const completeAdd = `${other} ,${appartment} ,${street} ,${city} ,${state} ,${pin}` 
- return completeAdd; 
-}
+    const { other, appartment, street, city, state, pin } = add;
+    const completeAdd = `${other} ,${appartment} ,${street} ,${city} ,${state} ,${pin}`
+    return completeAdd;
+  }
 
   const handleTicketSubmit = useCallback(async (formData) => {
     if (!executeRecaptcha) {
@@ -48,18 +48,18 @@ const ContactUs = () => {
     }
 
     const payload = {
-      name:formData.name,
-      email:formData.email,
+      name: formData.name,
+      email: formData.email,
       subject: formData.subject || orderHelpInfo?.subject || 'Support Request',
       message: formData.message || orderHelpInfo?.message || '',
     };
 
     const response = await api.post('/support/user', payload);
-    
+
     // Automatically switch to the "My Tickets" tab after successful creation
-    if(user){
+    if (user) {
       setSelectedChannel('history');
-    }else{
+    } else {
       setSelectedChannel('ticket')
     }
 
@@ -80,7 +80,7 @@ const ContactUs = () => {
 
       {/* MAIN CONTENT AREA */}
       <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-12 gap-16">
-        
+
         {/* LEFT COLUMN: FORM OR HISTORY */}
         <div className="lg:col-span-8">
           <h2 className="text-3xl font-medium mb-4">{contactInfo?.heading || "We're here to help"}</h2>
@@ -101,11 +101,10 @@ const ContactUs = () => {
             </button> */}
             <button
               type="button"
-              className={`w-full px-4 py-3 text-sm rounded-md transition-all font-bold border ${
-                selectedChannel === 'ticket'
+              className={`w-full px-4 py-3 text-sm rounded-md transition-all font-bold border ${selectedChannel === 'ticket'
                   ? 'bg-black text-white'
                   : 'bg-surface text-gray-700 border-gray-200 hover:bg-gray-100'
-              }`}
+                }`}
               onClick={() => setSelectedChannel('ticket')}
             >
               {user ? "New Ticket" : "Get In Touch With Us"}
@@ -114,11 +113,10 @@ const ContactUs = () => {
             {user && (
               <button
                 type="button"
-                className={`w-full px-4 py-3 text-sm rounded-md transition-all font-bold border ${
-                  selectedChannel === 'history'
+                className={`w-full px-4 py-3 text-sm rounded-md transition-all font-bold border ${selectedChannel === 'history'
                     ? 'bg-black text-white'
                     : 'bg-surface text-gray-700 border-gray-200 hover:bg-gray-100'
-                }`}
+                  }`}
                 onClick={() => setSelectedChannel('history')}
               >
                 My Tickets
@@ -168,9 +166,12 @@ const ContactUs = () => {
               {contactInfo?.socials?.map((social, sIndex) => {
                 const IconComponent = Icons[`Fa${social.label}`];
                 return IconComponent ? (
-                  <a key={sIndex} href={social.url} target="_blank" rel="noopener noreferrer" className="text-xl hover:scale-110 transition-transform">
-                    <IconComponent />
-                  </a>
+                  <div className="flex flex-col items-center justify-center gap-1 group ">
+                    <a key={sIndex} href={social.url} target="_blank" rel="noopener noreferrer" className="text-2xl hover:scale-110 transition-transform group-hover:text-red-500">
+                      <IconComponent />
+                    </a>
+                    <h1 className='font-bold group-hover:text-red-500'>{social.label}</h1>
+                  </div>
                 ) : null;
               })}
             </div>
