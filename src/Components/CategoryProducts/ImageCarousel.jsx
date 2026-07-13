@@ -1,25 +1,29 @@
 import React, { useState, useEffect } from'react';
 
-const ImageCarousel = ({ image }) => {
+const ImageCarousel = ({ images , type }) => {
  
  const [currentIndex, setCurrentIndex] = useState(0);
  const [isHovered, setIsHovered] = useState(false);
  
  // In a real app,'image' would be an array of strings. 
  // Here we use the same image 3 times to simulate the loop.
- const slides = [image, image, image];
+
+ const imageLoop = [images,images,images]
+
+ const stack = type === "single" ? imageLoop : images;
 
  useEffect(() => {
  let interval;
  if (isHovered) {
  interval = setInterval(() => {
- setCurrentIndex((prev) => (prev + 1) % slides.length);
+ setCurrentIndex((prev) => (prev + 1) % stack?.length);
  }, 2000); // Transitions every 1.2 seconds on hover
  } else {
  setCurrentIndex(0); // Reset to first image when mouse leaves
  }
  return () => clearInterval(interval);
- }, [isHovered, slides.length]);
+ }, [isHovered, stack?.length]);
+
 
  return (
  <div 
@@ -31,7 +35,7 @@ const ImageCarousel = ({ image }) => {
  className="flex h-full transition-transform duration-700 ease-in-out"
  style={{ transform: `translateX(-${currentIndex * 100}%)` }}
  >
- {slides.map((src, i) => (
+ {stack?.map((src, i) => (
  <img 
  key={i} 
  src={src} 
@@ -44,7 +48,7 @@ const ImageCarousel = ({ image }) => {
  {/* Slide Indicators */}
  {isHovered && (
  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1 z-30">
- {slides.map((_, i) => (
+ {stack?.map((_, i) => (
  <div 
  key={i}
  className={`h-1 rounded-full transition-all duration-300 ${

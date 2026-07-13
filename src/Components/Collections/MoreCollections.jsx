@@ -42,10 +42,10 @@ const MoreCollections = () => {
  // 4. Main Decorative Layout Thread Render
  return (
  <section className="w-full bg-white border-t border-stone-100 selection:bg-stone-900 selection:text-white">
- <div className="max-w-[1300px] mx-auto px-4 md:px-8 py-12 md:py-16">
+ <div className="max-w-[1300px] mx-auto px-4 md:px-8 py-4 md:py-4">
  
  {/* SECTION HEADER BLOCK */}
- <div className="text-center mb-16 md:mb-24">
+ <div className="text-center mb-8 md:mb-8">
  <p className="text-[10px] font-black uppercase tracking-[0.4em] text-stone-400 mb-4">
  Discovery Tracks
  </p>
@@ -56,7 +56,7 @@ const MoreCollections = () => {
 
  {/* MAPPING CATEGORIES WRAPPER */}
  {c.categorizedProducts.map((category) => (
- <div key={category.name} className="mb-16 md:mb-24 last:mb-0">
+ <div key={category.name} className="mb-8 md:mb-8 last:mb-0">
  
  {/* CATEGORY GRID SUB-HEADER */}
  <div className="flex items-baseline justify-between mb-8 border-b border-stone-100 pb-4">
@@ -74,7 +74,7 @@ const MoreCollections = () => {
  {/* SYNCED PRODUCT GRID CONTEXT BLOCK */}
  <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6 md:gap-y-14">
  {category.products.map((product) => (
- <ProductCard 
+ product?.inStock && <ProductCard 
  key={`${product._id || product.id}-${product.variantId ||'base'}`} 
  item={product} 
  type={c.type} 

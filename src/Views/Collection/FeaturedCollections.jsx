@@ -46,7 +46,7 @@ const FeaturedCollections = () => {
  {/* HORIZONTAL STREAM DISPLAY MATRIX */}
  <div className="flex gap-4 md:gap-8 overflow-x-auto pb-10 no-scrollbar snap-x snap-mandatory">
  {row.products.map(product => (
- <div 
+ product?.inStock && <div 
  key={`${product._id || product.id}-${product.variantId ||'base'}`} 
  className="min-w-[280px] md:min-w-[350px] snap-start"
  >

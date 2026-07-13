@@ -7,6 +7,8 @@ import ProductCard from'../Components/CategoryProducts/ProductCard';
 import FilterSidebar from'../Components/CategoryProducts/FilterSidebar';
 import CustomSort from'../Components/CategoryProducts/CustomSort';
 import FeaturedCollection from'../Views/Collection/FeaturedCollections';
+import AdvertisementBanner from '../Components/Ads/AdvertisementBanner';
+import CategoryAdvertisement from '../Components/Ads/CategoryAdvertisement';
 
 const CategoryProducts = () => {
  const {
@@ -26,10 +28,14 @@ const CategoryProducts = () => {
  handleSortChange,
  handleFilterChange,
  clearFilters,
+ categoryAd
  } = useCategoryProductsData();
 
+
+ console.log(category)
  return (
  <div className="min-h-screen bg-white text-gray-900 transition-colors duration-300">
+
  
  {/* --- MOBILE FILTER SIDE DRAWER PANEL --- */}
  <div className={`fixed inset-0 z-[100] transition-all duration-300 ${isMobileFilterOpen ?'visible' :'invisible'}`}>
@@ -67,22 +73,23 @@ const CategoryProducts = () => {
  <FaHome className="text-gray-400 hover:text-black cursor-pointer transition-colors" onClick={() => navigate('/')} />
  <span className="text-gray-300">/</span>
  <span className="text-gray-400 cursor-pointer hover:text-black transition-colors" onClick={() => navigate(`/collections/${type}`)}>
- {type.replace(/[^a-z0-9]+/g, " ")}
+ {type}
  </span>
  <span className="text-gray-300">/</span>
- <p className="text-black">{category.replace(/[^a-z0-9]+/g, " ")}</p>
+ <p className="text-black">{category}</p>
  </div>
 
  {products.length > 0 ? (
- <>
+     <>
  {/* --- SEARCH HEADER VIEWPORT --- */}
  <header className="text-center">
- <h1 className="text-4xl md:text-6xl font-extralight uppercase tracking-[0.25em] text-gray-900">{category.replace(/[^a-z0-9]+/g, " ")}</h1>
+ <h1 className="text-4xl md:text-6xl font-extralight uppercase tracking-[0.25em] text-gray-900">{category}</h1>
  <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-gray-400 mt-4 max-w-md mx-auto leading-relaxed">
- Explore our curated selection of {type.replace(/[^a-z0-9]+/g, " ")}'s {category.replace(/[^a-z0-9]+/g, " ")} design essentials
+ Explore our curated selection of {type}'s {category} design essentials
  </p>
  </header>
 
+         <CategoryAdvertisement data={categoryAd}/>
  {/* --- DYNAMIC UTILITY AND CONTROLS BAR --- */}
  <div className="flex justify-between items-center py-4 border-t border-b border-gray-100 mb-8">
  <button

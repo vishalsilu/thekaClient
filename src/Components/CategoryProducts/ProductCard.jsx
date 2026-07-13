@@ -22,6 +22,10 @@ const ProductCard = ({ item, type, host }) => {
  const variantQuery = it?.variantId ? `?variant=${it.variantId}${it?.size ? `&size=${it.size}` :''}` :'';
  navigate(`/product/${type}/${it?.id || item?.id}${variantQuery}`);
  };
+
+
+ console.log(item)
+
  return (
  <article className={`group relative flex w-full max-w-[360px] flex-col overflow-hidden rounded-2xl border border-stone-200 bg-surface p-2 transition-all duration-300 hover:border-stone-400 hover:shadow-md ${!item?.inStock ?'bg-stone-50/60' :''}`}>
  
@@ -74,7 +78,10 @@ const ProductCard = ({ item, type, host }) => {
  ) : null}
 
  {/* Render Carousel or single media layout */}
- <ImageCarousel image={item?.thumbnail} />
+{item?.variantId && item?.variants &&  <ImageCarousel images={item?.variants.find(variant => variant.id ===item.variantId)?.images} type="multiple" />}
+{!item?.variantId && item?.variants &&  <ImageCarousel images={item?.variants[0]?.images} type="multiple" />}
+{!item?.variantId && !item?.variants &&  <ImageCarousel images={item?.thumbnail} type="single" />}
+
 
  {/* Embedded Color Swatch Track */}
  {item?.variants?.length > 0 && (
@@ -99,7 +106,8 @@ const ProductCard = ({ item, type, host }) => {
 
  {/* Pricing Layout Structure */}
  <div className="mt-1 flex items-baseline gap-1.5">
- <span className="text-sm font-black">₹{price}</span>
+ <span className="text-sm font-bold text-slate-500 line-through decoration-gray-500">₹{price}</span>
+{item?.salePrice &&  <span className="text-sm font-black">₹{item?.salePrice}</span>}
  {discount > 0 && (
  <span className="text-[10px] font-bold text-red-500">
  ({discount}% OFF)
@@ -108,10 +116,10 @@ const ProductCard = ({ item, type, host }) => {
  </div>
 
  {/* Premium Deal Row Conditional */}
- {item?.salePrice && (
- <div className="mt-1 inline-flex items-center gap-1 rounded bg-emerald-50 px-1.5 py-0.5 text-[9px] font-extrabold text-emerald-700 w-fit">
+ {item?.salePrice && price - item.salePrice > 0 && (
+ <div className="mt-1 inline-flex items-center gap-1 rounded bg-emerald-50 px-1.5 py-0.5 text-[12px] font-extrabold text-emerald-700 w-fit">
  <BadgePercent className="h-3 w-3" />
- <span>BEST PRICE: ₹{item.salePrice}</span>
+ <span>Save ₹{Math.round(price - item.salePrice)}</span>
  </div>
  )}
 

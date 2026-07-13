@@ -15,6 +15,7 @@ export const useCategoryProductsData = () => {
 
  const [sortBy, setSortBy] = useState('featured');
  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+ const [categoryAd,setCategoryAd] = useState({image:"",url:""})
  
  const [filterOptions, setFilterOptions] = useState({
  Fit: [], Color: [], Size: [], Fabric: [], Pattern: []
@@ -61,13 +62,50 @@ const response = await api.get(`/category/weartype/${cleanType}/${cleanCategory}
  fetchDynamicFilters();
  }, [category, type, dispatch]);
 
+useEffect(() => {
+  const fetchCategoryAd = async () => {
+    try {
+      // 1. Fixed the conditional check from (type, category) to (type && category)
+      if (type && category) {
+        console.log("Fetching ad for:", type, category);
+		const cleanType = type.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+const cleanCategory = category.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+
+        // 2. Fixed the typo in "categoryName" and used the raw values the backend expects
+        const response = await api.get(`/ad/single?collectionName=${cleanType}&categoryName=${cleanCategory}`);
+        
+        console.log("API Response:", response.data);
+
+        // 3. Fixed data parsing to match the backend structure (response.data.data)
+        if (response.data?.success && response.data?.data) {
+          const adData = response.data.data;
+          
+          setCategoryAd({
+            image: adData?.image || "",
+            // Storing the entire ad object so your AdViewer can read it later
+            fullData: adData 
+          });
+        } else {
+          setCategoryAd({ image: "", fullData: null });
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching ad:", error);
+      setCategoryAd({ image: "", fullData: null });
+    }
+  };
+
+  fetchCategoryAd();
+}, [type, category]);
+
+
  // Handle scroll locking over active view port layers
  useEffect(() => {
  document.body.style.overflow = isMobileFilterOpen ?'hidden' :'unset';
  }, [isMobileFilterOpen]);
 
  // Track frame title transformations dynamically
- useTextFavicon('HR', `${type?.toUpperCase() ||'COLLECTION'}'s ${category?.toUpperCase()}-${data?.websiteName ||''}`, {
+ useTextFavicon('UR', `${type?.toUpperCase() ||'COLLECTION'}'s ${category?.toUpperCase()}-${data?.websiteName ||''}`, {
  bgColor:'#10b981',
  textColor:'#ffffff',
  });
@@ -107,6 +145,9 @@ const response = await api.get(`/category/weartype/${cleanType}/${cleanCategory}
  return selectedSet.includes(normalize(product[productKey]));
  });
  });
+
+
+
 
  // Compute active sorting orders
  if (sortBy ==='low-to-high') {
@@ -214,5 +255,6 @@ try {
  handleSortChange,
  handleFilterChange,
  clearFilters,
+ categoryAd
  };
 };

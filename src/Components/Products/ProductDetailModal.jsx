@@ -199,7 +199,7 @@ const ProductDetail = () => {
  {product.salePrice && (
  <div className="inline-flex items-center gap-1 rounded bg-emerald-50 px-2 py-0.5 text-[9px] font-extrabold text-emerald-700 w-fit border border-emerald-100 mt-1">
  <BadgePercent className="h-3.5 w-3.5" />
- <span>BEST PRICE MATCH AVAILABLE</span>
+ <span>Save Rs. {product?.price - product?.salePrice}</span>
  </div>
  )}
  </div>
@@ -217,22 +217,23 @@ const ProductDetail = () => {
  <button
  key={v.id}
  onClick={() => handleColorClick(v)}
- className={`relative w-10 h-10 rounded-full transition-all flex items-center justify-center p-0.5 border ${
+ className={`relative w-24 h-42 rounded-xl shadow-sm  transition-all flex flex-col items-center justify-center border ${
  isSelected 
- ?"border-stone-950 scale-105" 
- :"border-stone-200 hover:border-stone-400"
+ ?" scale-105 shadow-emerald-500" 
+ :"border-stone-200 hover:border-stone-400 hover:shadow-emerald-400"
  }`}
  >
  <div 
- className="w-full h-full rounded-full bg-cover border border-black/5" 
+ className="w-24 h-32  bg-cover border border-black/5 rounded-t-xl" 
  style={{ 
  backgroundColor: v.colorCode || v?.color?.toLowerCase(), 
  backgroundImage: `url(${v.images[0]})` 
  }}
  />
+<span className="font-semibold text-xs tracking-widest">{v.color}</span>
  </button>
  );
- })}
+})}
  </div>
  </div>
 
@@ -248,7 +249,7 @@ const ProductDetail = () => {
  selectedSize === s.size 
  ?"border-stone-900 bg-stone-950 text-white font-extrabold" 
  : s.stock === 0 
- ?"opacity-30 border-stone-100 bg-stone-50 text-stone-300 cursor-not-allowed line-through italic" 
+ ?"opacity-90 border-stone-200 bg-stone-200 text-stone-600 cursor-not-allowed  italic" 
  :"border-stone-200 text-stone-600 hover:border-stone-400 hover:text-stone-900"
  }`}
  >
@@ -311,7 +312,7 @@ const ProductDetail = () => {
 
  <div className="mt-12 py-10 border-t border-stone-100 bg-stone-50/50">
  <div className="max-w-[1300px] mx-auto px-4 md:px-8">
- <section className="mb-16">
+ <section className="mb-4">
  <h3 className="text-[10px] font-bold uppercase tracking-widest mb-6">Technical Specifications</h3>
  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
  <SpecBox label="Fabric Content" value={product.fabric} />

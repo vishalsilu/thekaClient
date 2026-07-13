@@ -205,7 +205,7 @@ const CartView = ({ controller }) => {
   <AdvertisementBanner location="cart"/>
  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
  {featuredProducts.map((product,index) => (
- <ProductCard host="cart" key={product._id + "-" + index} item={product} type={product?.type.toLowerCase()} />
+ product?.inStock && <ProductCard host="cart" key={product._id + "-" + index} item={product} type={product?.type.toLowerCase()} />
  ))}
  </div>
  </div>
@@ -221,7 +221,7 @@ const CartView = ({ controller }) => {
  <h2 className="text-lg md:text-2xl font-bold uppercase tracking-[0.2em]  text-zinc-900">You might also like</h2>
  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
  {featuredProducts.map((product,idx) => (
- <ProductCard host="cart" key={idx} item={product} type={product?.type.toLowerCase()} />
+ product?.inStock && <ProductCard host="cart" key={idx} item={product} type={product?.type.toLowerCase()} />
  ))}
  </div>
  </div>

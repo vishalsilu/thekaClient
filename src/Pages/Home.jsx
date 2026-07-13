@@ -23,9 +23,9 @@ const Home = () => {
  <div className="h-auto w-full bg-surface">
  {/* HERO PRESENTATION VIEW SECTION */}
  <Hero Data={data?.hero} />
+ <AdvertisementBanner location="home" max={1} />
  
  {/* DYNAMIC MARKETING BANNER PIPELINE CONTAINER */}
- <AdvertisementBanner location="home" />
  
  {/* FEATURED INBOUND ARCHIVE COLLECTION BLOCK */}
  <div className="py-2">
