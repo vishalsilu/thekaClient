@@ -31,8 +31,6 @@ const CategoryProducts = () => {
  categoryAd
  } = useCategoryProductsData();
 
-
- console.log(category)
  return (
  <div className="min-h-screen bg-white text-gray-900 transition-colors duration-300">
 

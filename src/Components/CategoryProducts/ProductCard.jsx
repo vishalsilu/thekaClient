@@ -23,9 +23,6 @@ const ProductCard = ({ item, type, host }) => {
  navigate(`/product/${type}/${it?.id || item?.id}${variantQuery}`);
  };
 
-
- console.log(item)
-
  return (
  <article className={`group relative flex w-full max-w-[360px] flex-col overflow-hidden rounded-2xl border border-stone-200 bg-surface p-2 transition-all duration-300 hover:border-stone-400 hover:shadow-md ${!item?.inStock ?'bg-stone-50/60' :''}`}>
  

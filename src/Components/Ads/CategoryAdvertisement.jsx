@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 const CategoryAdvertisement = ({ data }) => {
   const navigate = useNavigate();
 
-  // Safety fallback if the ad data is nested inside fullData from your useEffect, or just passed directly
   const ad = data?.fullData || data;
 
   if (!ad || !ad.image) return null;
@@ -18,27 +17,27 @@ const CategoryAdvertisement = ({ data }) => {
     }
   };
 
-  // Maps your backend textPosition to the perfect flexbox and gradient classes
   const getLayoutConfig = (position) => {
     switch (position) {
-      case 'start': // Text on the LEFT
+      case 'start':
         return {
           wrapper: 'justify-start',
           textAlignment: 'items-start text-left',
-          gradient: 'bg-gradient-to-r from-black/90 via-black/50 to-transparent',
+          // Darker 'via' point on mobile ensures text spanning the width remains readable
+          gradient: 'bg-gradient-to-r from-black/95 via-black/60 sm:via-black/50 to-transparent',
         };
-      case 'end': // Text on the RIGHT
+      case 'end':
         return {
           wrapper: 'justify-end',
           textAlignment: 'items-end text-right',
-          gradient: 'bg-gradient-to-l from-black/90 via-black/50 to-transparent',
+          gradient: 'bg-gradient-to-l from-black/95 via-black/60 sm:via-black/50 to-transparent',
         };
-      case 'center': // Text in the CENTER
+      case 'center':
       default:
         return {
           wrapper: 'justify-center',
           textAlignment: 'items-center text-center',
-          gradient: 'bg-gradient-to-t from-black/90 via-black/40 to-black/10',
+          gradient: 'bg-gradient-to-t from-black/95 via-black/50 to-black/10',
         };
     }
   };
@@ -46,51 +45,48 @@ const CategoryAdvertisement = ({ data }) => {
   const layout = getLayoutConfig(ad?.textPosition);
 
   return (
-    // Slightly wider on mobile (95%) and standard on desktop (90%)
     <div className="mx-auto w-[95%] md:w-[90%] py-4 md:py-8">
       <article
         onClick={() => handleAdClick(ad?.url)}
-        className="cursor-pointer group relative flex flex-col overflow-hidden rounded-2xl md:rounded-3xl shadow-xl transition-all duration-300 hover:shadow-2xl hover:shadow-black/20 bg-neutral-900"
+        className="cursor-pointer group relative flex flex-col overflow-hidden rounded-xl sm:rounded-2xl md:rounded-3xl shadow-xl transition-all duration-300 hover:shadow-2xl hover:shadow-black/20 bg-neutral-900"
       >
-        {/* --- LAYER 1: STRUCTURAL IMAGE --- */}
-        {/* On mobile: forced to 250px height so text fits. On desktop: auto-height to perfectly wrap the image */}
+        {/* Slightly taller base height on mobile (280px) to ensure tall text blocks don't get crushed */}
         <img
           src={ad?.image}
           alt="Advertisement"
-          className="w-full h-[250px] sm:h-[300px] md:h-auto md:min-h-[300px] object-cover transition-transform duration-[10s] ease-out group-hover:scale-105"
+          className="w-full h-[280px] sm:h-[350px] md:h-auto md:min-h-[350px] md:max-h-[500px] object-cover transition-transform duration-[10s] ease-out group-hover:scale-105"
         />
 
-        {/* --- LAYER 2: DYNAMIC GRADIENT MASK --- */}
         <div className={`absolute inset-0 pointer-events-none ${layout.gradient}`} />
 
-        {/* --- LAYER 3: DYNAMIC TEXT CONTENT --- */}
-        <div className={`absolute inset-0 p-4 sm:p-6 md:p-12 lg:p-16 flex flex-row items-center ${layout.wrapper}`}>
+        {/* Reduced padding on mobile (p-3) */}
+        <div className={`absolute inset-0 p-3 sm:p-6 md:p-8 lg:p-10 flex flex-row items-center ${layout.wrapper}`}>
           
-          <div className={`flex flex-col gap-y-2 sm:gap-y-3 md:gap-y-5 max-w-[90%] sm:max-w-md md:max-w-lg w-full ${layout.textAlignment}`}>
+          {/* Max-width set to 95% on mobile so text can utilize the screen real estate */}
+          <div className={`flex flex-col gap-y-1.5 sm:gap-y-3 md:gap-y-4 max-w-[95%] sm:max-w-md md:max-w-xl lg:max-w-2xl w-full max-h-full overflow-hidden py-1 sm:py-2 ${layout.textAlignment}`}>
             
             {ad?.title && (
-              <h2 className="text-yellow-400 text-xl sm:text-2xl md:text-4xl lg:text-5xl font-extrabold tracking-tight drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)] leading-tight">
+              <h2 className="flex-shrink-0 text-yellow-400 text-lg sm:text-2xl md:text-3xl lg:text-5xl font-extrabold tracking-tight drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)] leading-tight">
                 {ad.title}
               </h2>
             )}
             
             {ad?.description && (
-              // line-clamp-2 prevents text overflow on very small phones
-              <p className="text-xs sm:text-sm md:text-lg lg:text-xl text-neutral-100 font-medium leading-snug drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)] line-clamp-2 md:line-clamp-none">
+              <p className="text-[11px] sm:text-sm md:text-base lg:text-lg text-neutral-100 font-medium leading-snug drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)] line-clamp-3 sm:line-clamp-4 lg:line-clamp-5">
                 {ad.description}
               </p>
             )}
             
             {ad?.code && (
-              <div className="py-1 md:py-2">
-                <span className="inline-block px-3 py-1.5 md:px-6 md:py-3 border border-yellow-500/50 bg-yellow-500/10 backdrop-blur-sm rounded-lg md:rounded-xl text-xl sm:text-3xl md:text-5xl lg:text-6xl text-yellow-400 font-black tracking-widest shadow-[0_0_30px_rgba(234,179,8,0.2)] drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)]">
+              <div className="py-0.5 sm:py-2 flex-shrink-0 mt-0.5 sm:mt-0">
+                <span className="inline-block px-2.5 py-1 sm:px-6 sm:py-3 border border-yellow-500/50 bg-yellow-500/10 backdrop-blur-sm rounded-md sm:rounded-xl text-sm sm:text-3xl md:text-4xl lg:text-5xl text-yellow-400 font-black tracking-widest shadow-[0_0_30px_rgba(234,179,8,0.2)] drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)]">
                   {ad.code}
                 </span>
               </div>
             )}
             
             {ad?.buttonText && (
-              <button className="mt-1 md:mt-2 bg-yellow-500 hover:bg-yellow-400 text-black font-extrabold text-xs sm:text-sm md:text-lg px-4 py-2 md:px-10 md:py-4 rounded-full transition-all duration-300 transform group-hover:-translate-y-1 group-hover:shadow-[0_10px_30px_rgba(234,179,8,0.4)] shadow-lg w-fit pointer-events-auto">
+              <button className="flex-shrink-0 mt-1.5 sm:mt-2 bg-yellow-500 hover:bg-yellow-400 text-black font-extrabold text-[10px] sm:text-sm md:text-base lg:text-lg px-3 py-1.5 sm:px-8 sm:py-3 rounded-full transition-all duration-300 transform group-hover:-translate-y-1 group-hover:shadow-[0_10px_30px_rgba(234,179,8,0.4)] shadow-md sm:shadow-lg w-fit pointer-events-auto">
                 {ad.buttonText}
               </button>
             )}
